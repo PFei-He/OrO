@@ -33,7 +33,7 @@ import {
 
 // 调动原生的网络请求框架
 var network = NativeModules.Network
-network.GET('http://faylib.top', function(value) {
+network.GET('http://www.weather.com.cn/data/sk/101010100.html', function (value) {
   alert(value)
 })
 
