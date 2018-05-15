@@ -20,14 +20,14 @@ Structure / 目录结构
 ---
 ```
 OrO/
-	../android/
-	App.js
-	app.json
-	index.js
-	../ios/
-	../node_modules/
-	package.json
-	README.md
+	../android/			// Android 端根目录
+	App.js 				// Web 端源码
+	app.json 			// 工程信息文件
+	index.js 			// Web 端入口文件
+	../ios/				// iOS 端根目录
+	../node_modules/	// npm 目录，存放构建工程需要的工具
+	package.json 		// 构建时的参数信息
+	README.md 			// 工程说明（即为此文件）
 	yarn.lock
 ```
 
@@ -40,7 +40,8 @@ Mac (macOS 10.13.3)
 Development Tools / 开发工具
 ---
 * `Web`<br>
-[IntelliJ IDEA](https://www.jetbrains.com/idea/)
+[IntelliJ IDEA](https://www.jetbrains.com/idea/)<br>
+[Sublime Text](https://www.sublimetext.com)
 
 * `Android`<br>
 [Android Studio](https://developer.android.com/studio/)
@@ -51,8 +52,15 @@ Development Tools / 开发工具
 
 Detail / 说明
 ---
-1. 运行 Android 工程前，需要手动启动 `React-Native` 的 `Server` 才能连通代码和设备，否则会出现无页面的状态（页面红色报错），运行 iOS 工程会自动启动 `Server` 。
-2. 每次修改 Web 端代码并保存后，移动端无需重新编译，只需刷新即可。Android 端设备可连按两次 `R` 键刷新，iOS 端可按 `Command + R` 键刷新。
+### 构建工程必知
+为了方便传输，本工程已进行了简化处理，各种编译包和构建工具都已删除，运行时会报错，所以需要执行如下的 Shell 脚本将工程完善。
+1. `yarn-install`  安装 npm
+2. `server-start`  运行 Android 工程前，需要手动启动 `React-Native` 的 `Server` 才能连通代码和设备，否则会出现无页面的状态（页面红色报错），运行 iOS 工程会自动启动 `Server` 。
+3. 每次修改 Web 端代码并保存后，移动端无需重新编译，只需刷新即可。Android 端设备可连按两次 `R` 键刷新，iOS 端可按 `Command + R` 键刷新。
+
+
+### Placeholder / 占位符文件
+占位符文件对于整个工程并没有实际作用，只是用于上传工程到 GitHub 时可以将空文件夹上传，开发者可于下载工程后将所有的占位符文件删除，对工程运行完全没有影响。
 
 
 
@@ -145,6 +153,38 @@ Root Path / 目录
 `OrO/android/`
 
 
+Library / 类库
+---
+#### Path / 文件路径
+`/OrO/android/app/build.gradle`
+
+#### Edit / 编写
+* [Volley](https://github.com/google/volley)
+```
+// line 152 / 152行
+compile 'com.android.volley:volley:1.0.0'
+```
+
+
+Gradle
+---
+解决 `Android Studio` 使用 `Gradle` 构建工程慢，从 [Gradle官网](https://gradle.org) 下载适用的版本，将zip包放入到 `/Users/username/.gradle/wrapper/dists/gradle-*-all/*/` (* 表示版本号)目录下，重新打开工程，`Android Studio` 会自行解压安装。
+
+
+Java 8
+---
+#### Path / 文件路径
+`/OrO/android/app/build.gradle`
+
+#### Edit / 编写
+```
+// line 110-112 / 110-112行
+jackOptions {
+	enabled true
+}
+```
+
+
 
 iOS
 ===
@@ -154,10 +194,63 @@ Root Path / 目录
 `OrO/ios/`
 
 
+Library / 类库
+---
+#### Path / 文件路径
+`/OrO/ios/Podfile`
+
+#### Edit / 编写
+* [AFNetworking](https://github.com/AFNetworking/AFNetworking)
+```
+// line 5 / 5行
+pod 'AFNetworking', '~> 2.6.0'
+```
+
+
+CocoaPods
+---
+* `Install / 安装`
+```
+$sudo gem install -n /usr/local/bin cocoapods
+```
+
+* `Download / 下载类库`
+```
+$pod install
+```
+
+
 
 Shell
 ===
 
 Root Path / 目录
 ---
-`OrO/shell/`
+`/OrO/shell/`
+
+
+Detail / 说明
+---
+* `install-react-native`<br>
+安装 `React-Native`
+
+* `install-yarn`<br>
+安装 `yarn`
+
+* `pod-install`<br>
+为 iOS 工程导入指定的类库
+
+* `server-start`<br>
+启动 `React-Native` 的服务
+
+* `yarn-clean`<br>
+删除 npm 构建工具包并清空构建缓存
+
+* `yarn-install`<br>
+安装 npm 构建工具包
+
+
+
+License
+===
+`OrO` is released under the MIT license, see [LICENSE](https://raw.githubusercontent.com/PFei-He/OrO/master/LICENSE) for details.
