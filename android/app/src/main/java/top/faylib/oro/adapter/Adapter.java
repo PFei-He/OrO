@@ -51,9 +51,9 @@ public class Adapter extends ReactContextBaseJavaModule {
         return "Adapter";
     }
 
-    // 定义一个给 JavaScript 调用的方法，必须加入 @ReactMethod 关键字，表示声明此方法是提供给 JavaScript 的
+    // 定义一个给 JavaScript 调用的方法，必须加入 @ReactMethod 关键字，表示声明此方法是提供给 JavaScript 的，方法名是 JavaScript 的调用名，也是唯一标识名，所以此处不能有重名方法，否则最后定义的方法会顶替之前全部的重名方法
     @ReactMethod
-    public void Test(String string, Callback callback) {
+    public void test(String string, Callback callback) {
         Log.v("OrO", string);
         callback.invoke("I'm the callback from Java!");
     }

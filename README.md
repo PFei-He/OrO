@@ -20,14 +20,16 @@ Structure / 目录结构
 ---
 ```
 OrO/
-	../android/			// Android 端根目录
-	App.js 				// Web 端源码
-	app.json 			// 工程信息文件
-	index.js 			// Web 端入口文件
-	../ios/				// iOS 端根目录
-	../node_modules/	// npm 目录，存放构建工程需要的工具
-	package.json 		// 构建时的参数信息
-	README.md 			// 工程说明（即为此文件）
+	../android/         // Android 端根目录
+	App.js              // Web 端源码
+	app.json            // 工程信息文件
+	index.js            // Web 端入口文件
+	../ios/             // iOS 端根目录
+	../node_modules/    // npm 目录，存放构建工程需要的工具
+	package.json        // 构建时的参数信息
+	README.md           // 工程说明（即为此文件）
+	../resources/       // 资源文件夹，用于存放工程用到的所有源文件
+	../shell/           // 存放 Shell 脚本文件
 	yarn.lock
 ```
 

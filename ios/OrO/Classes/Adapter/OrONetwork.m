@@ -23,9 +23,22 @@
 #import "OrONetwork.h"
 #import <AFNetworking/AFNetworking.h>
 
+typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
+    OrONetworkRequestMethodGET,
+    OrONetworkRequestMethodPOST,
+    OrONetworkRequestMethodDELETE,
+};
+
 @interface OrONetwork ()
 
+// 网络请求
 @property (nonatomic, strong) AFHTTPSessionManager *manager;
+
+// 超时时隔
+@property (nonatomic) NSInteger timeoutInterval;
+
+// 尝试次数
+@property (nonatomic) NSInteger tryTimes;
 
 @end
 
@@ -33,6 +46,7 @@
 
 #pragma mark - Setter / Getter Methods
 
+// 网络请求
 - (AFHTTPSessionManager *)manager
 {
     if (!_manager) {
@@ -42,17 +56,64 @@
     return _manager;
 }
 
+// 超时时隔
+- (void)setTimeoutInterval:(NSInteger)timeoutInterval
+{
+    self.manager.requestSerializer.timeoutInterval = timeoutInterval;
+    _timeoutInterval = timeoutInterval;
+}
+
 
 #pragma mark - Private Methods
 
+// 解析 JSON
 - (NSString *)parseJSON:(id)json
 {
     NSError *error;
     NSString *jsonString;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:&error];
     if (jsonData) jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
     return jsonString;
+}
+
+// 发送请求
+- (void)sendWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params tryTimes:(NSInteger)tryTimes response:(RCTResponseSenderBlock)callback
+{
+    tryTimes--;
+    switch (method) {
+        case OrONetworkRequestMethodGET:
+        {
+            [self.manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+                callback(@[[self parseJSON:responseObject]]);
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                if (tryTimes < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil tryTimes:tryTimes response:callback];
+            }];
+        }
+            break;
+        case OrONetworkRequestMethodPOST:
+        {
+            [self.manager POST:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+                callback(@[[self parseJSON:responseObject]]);
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                if (tryTimes < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params tryTimes:tryTimes response:callback];
+            }];
+        }
+            break;
+        case OrONetworkRequestMethodDELETE:
+        {
+            [self.manager DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+                callback(@[[self parseJSON:responseObject]]);
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                if (tryTimes < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params tryTimes:tryTimes response:callback];
+            }];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 
@@ -61,17 +122,22 @@
 RCT_EXPORT_MODULE(Network)
 
 /**
+ * 设置超时时隔
+ *
+ * @param sec: 时隔（秒）
+ */
+RCT_EXPORT_METHOD(timeoutInterval:(NSNumber *)sec) {
+    self.timeoutInterval = sec.integerValue;
+}
+
+/**
  * 发送 GET 请求
  *
  * @param url: 请求的地址
  * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
-RCT_EXPORT_METHOD(GET:(NSString *)url callback:(RCTResponseSenderBlock)callback) {
-    [self.manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        callback(@[[self parseJSON:responseObject]]);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+RCT_EXPORT_METHOD(GET:(NSString *)url response:(RCTResponseSenderBlock)callback) {
+    [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil tryTimes:self.tryTimes response:callback];
 }
 
 /**
@@ -81,12 +147,19 @@ RCT_EXPORT_METHOD(GET:(NSString *)url callback:(RCTResponseSenderBlock)callback)
  * @param params: 请求的参数
  * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
-RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params callback:(RCTResponseSenderBlock)callback) {
-    [self.manager POST:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        callback(@[[self parseJSON:responseObject]]);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@", error);
-    }];
+RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
+    [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params tryTimes:self.tryTimes response:callback];
+}
+
+/**
+ * 发送 DELETE 请求
+ *
+ * @param url: 请求的地址
+ * @param params: 请求的参数
+ * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
+ */
+RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
+    [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params tryTimes:self.tryTimes response:callback];
 }
 
 @end

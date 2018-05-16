@@ -349,8 +349,8 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		6559291720AA782500EBB944 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = OrO/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		6559296F20AAB05C00EBB944 /* OrOAdapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OrOAdapter.h; sourceTree = "<group>"; };
-		6559297020AAB05C00EBB944 /* OrOAdapter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OrOAdapter.m; sourceTree = "<group>"; };
+		6559296F20AAB05C00EBB944 /* OrOAdapter.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOAdapter.h; sourceTree = "<group>"; tabWidth = 4; };
+		6559297020AAB05C00EBB944 /* OrOAdapter.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrOAdapter.m; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86EA20A9A12400333131 /* OrONetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrONetwork.m; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86EB20A9A12400333131 /* OrONetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrONetwork.h; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86ED20A9A16900333131 /* OrOMainViewController.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOMainViewController.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -508,6 +508,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				65DF86E320A9A0A400333131 /* Adapter */,
 				65DF86E420A9A0A400333131 /* Base */,
+				65B25AE120AC3B5900109305 /* Model */,
 				65DF86BD20A9A0A400333131 /* ViewController */,
 			);
 			name = OrO;
@@ -581,6 +582,14 @@
 				6559291620AA782500EBB944 /* Main.storyboard */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		65B25AE120AC3B5900109305 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			path = OrO/Classes/Model;
 			sourceTree = "<group>";
 		};
 		65DF86BD20A9A0A400333131 /* ViewController */ = {

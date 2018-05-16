@@ -67,7 +67,7 @@
             </objects>
             <point key="canvasLocation" x="-750" y="117"/>
         </scene>
-        <!--OcO-->
+        <!--OrO-->
         <scene sceneID="URK-QX-0jo">
             <objects>
                 <viewController id="OFm-Qu-oiM" customClass="OrOMainViewController" sceneMemberID="viewController">
@@ -124,7 +124,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="jo5-fe-0WS"/>
                     </view>
-                    <navigationItem key="navigationItem" title="OcO" id="3hb-jK-olO"/>
+                    <navigationItem key="navigationItem" title="OrO" id="3hb-jK-olO"/>
                     <connections>
                         <segue destination="ll1-cV-jbR" kind="presentation" identifier="hybrid" id="rtv-uA-Zrd"/>
                     </connections>

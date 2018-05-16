@@ -26,6 +26,7 @@ package top.faylib.oro.adapter;
 
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -39,13 +40,53 @@ import org.json.JSONObject;
 
 public class Network extends ReactContextBaseJavaModule {
 
-    // 创建请求队列
+    //region Member Variables
+
+    // 请求队列
     private RequestQueue queue = Volley.newRequestQueue(getReactApplicationContext());
+
+    // 超时时隔
+    private int timeoutInterval = 60;
+
+    // 尝试次数
+    private int tryTimes = 1;
+
+    //endregion
+
 
     //region Life Cycle
 
     public Network(ReactApplicationContext reactContext) {
         super(reactContext);
+    }
+
+    //endregion
+
+
+    //region Private Methods
+
+    // 发送请求
+    private void send(int method, String url, JSONObject params, int tryTimes, Callback callback) {
+
+        tryTimes--;
+        int finalRetryTimes = tryTimes;
+        JsonObjectRequest request = new JsonObjectRequest(method, url, params, response -> {
+            callback.invoke(response.toString());
+        }, error -> {
+            if (finalRetryTimes < 1) {
+                Log.v("OrO", error.toString());
+            } else {
+                send(method, url, params, finalRetryTimes, callback);
+            }
+        }) {// 重写解析服务器返回的数据
+
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(timeoutInterval,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(request);
     }
 
     //endregion
@@ -59,6 +100,15 @@ public class Network extends ReactContextBaseJavaModule {
     }
 
     /**
+     * 设置超时时隔
+     *
+     * @param sec 时隔（秒）
+     */
+    public void timeoutInterval(int sec) {
+        timeoutInterval = sec;
+    }
+
+    /**
      * 发送 GET 请求
      *
      * @param url 请求的地址
@@ -66,12 +116,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void GET(String url, Callback callback) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
-            callback.invoke(response.toString());
-        }, error -> {
-            Log.v("OrO", error.toString());
-        });
-        queue.add(request);
+        send(Request.Method.GET, url, null, tryTimes, callback);
     }
 
     /**
@@ -83,12 +128,19 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, params, response -> {
-            callback.invoke(response.toString());
-        }, error -> {
-            Log.v("OrO", error.toString());
-        });
-        queue.add(request);
+        send(Request.Method.POST, url, params, tryTimes, callback);
+    }
+
+    /**
+     * 发送 DELETE 请求
+     *
+     * @param url 请求的地址
+     * @param params 请求的参数
+     * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
+     */
+    @ReactMethod
+    public void DELETE(String url, JSONObject params, Callback callback) {
+        send(Request.Method.DELETE, url, params, tryTimes, callback);
     }
 
     //endregion

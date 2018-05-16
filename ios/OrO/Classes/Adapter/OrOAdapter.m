@@ -29,10 +29,10 @@
 // 此方法为定义一个给 JavaScript 调用此类的唯一标识名
 RCT_EXPORT_MODULE(Adapter)
 
-// 定义一个给 JavaScript 调用的方法，方法的第一个参数名为 JavaScript 的调用名
-RCT_EXPORT_METHOD(GET:(NSString *)string callback:(RCTResponseSenderBlock)callback) {
-  NSLog(@"%@", string);
-  callback(@[@"I'm the callback from Objective-C!"]);
+// 定义一个给 JavaScript 调用的方法，方法的第一个参数名为 JavaScript 的调用名，也是唯一标识名，所以此处不能有重名方法，否则最后定义的方法会顶替之前全部的重名方法
+RCT_EXPORT_METHOD(test:(NSString *)string response:(RCTResponseSenderBlock)callback) {
+    NSLog(@"%@", string);
+    callback(@[@"I'm the callback from Objective-C!"]);
 }
 
 @end
