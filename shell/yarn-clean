@@ -30,6 +30,12 @@ cd $path
 # 进入 React-Native 目录（工程根目录）
 cd ../
 
+# 移除占位符文件
+rm -rf resources/image/Placeholder
+rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
+rm -rf ios/OrO/Classes/Base/Placeholder
+rm -rf ios/OrO/Classes/Model/Placeholder
+
 # 删除残留文件
 rm -rf android/.gradle/
 rm -rf android/.idea/
