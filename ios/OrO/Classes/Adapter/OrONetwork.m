@@ -165,7 +165,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 RCT_EXPORT_MODULE(Network)
 
 /**
- * 调试模式开关
+ * 设置调试模式
  *
  * @param yesOrNo: 开关
  */

@@ -98,7 +98,7 @@ public class Network extends ReactContextBaseJavaModule {
             }
 
             Log.i("OrO", "[ OrO ][ URL ] " + url);
-            Log.i("OrO", "[ OrO ][ PARAMS ] " + params.toString());
+            Log.i("OrO", "[ OrO ][ PARAMS ] " + ((params==null)?"null":params.toString()));
             Log.i("OrO", "[ OrO ][ RETRY TIMES ] " + String.valueOf(retryTimes));
             Log.i("OrO", "[ OrO ][ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
         }
@@ -110,7 +110,7 @@ public class Network extends ReactContextBaseJavaModule {
             callback.invoke(response.toString());
         }, error -> {
             if (count < 1) {
-                Log.v("OrO", error.toString());
+                Log.i("OrO", error.toString());
             } else {
                 send(method, url, params, count, callback);
             }
@@ -133,6 +133,16 @@ public class Network extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "Network";
+    }
+
+    /**
+     * 设置调试模式
+     *
+     * @param trueOrFalse 开关
+     */
+    @ReactMethod
+    public void debugMode(boolean trueOrFalse) {
+        debugMode = trueOrFalse;
     }
 
     /**

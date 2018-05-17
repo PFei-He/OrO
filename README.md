@@ -30,6 +30,7 @@ OrO/
 	README.md           // 工程说明（即为此文件）
 	../resources/       // 资源文件夹，用于存放工程用到的所有源文件
 	../shell/           // 存放 Shell 脚本文件
+	../web/             // Web 端根目录
 	yarn.lock
 ```
 

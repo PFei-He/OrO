@@ -28,14 +28,13 @@ import {
   StyleSheet,
   Text,
   View,
-  NativeModules
 } from 'react-native';
+import Network from './web/Network';
 
-// 调动原生的网络请求框架
-var network = NativeModules.Network
-network.GET('http://www.weather.com.cn/data/sk/101010100.html', function (value) {
+Network.debugMode(true);
+Network.GET('http://www.weather.com.cn/data/sk/101010100.html', function (value) {
   alert(value)
-})
+});
 
 const instructions = Platform.select({
   android: 'Android Running',
