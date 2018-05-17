@@ -31,14 +31,17 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 
 @interface OrONetwork ()
 
+// 调试模式
+@property (nonatomic, assign) BOOL debugMode;
+
 // 网络请求
 @property (nonatomic, strong) AFHTTPSessionManager *manager;
 
 // 超时时隔
 @property (nonatomic) NSInteger timeoutInterval;
 
-// 尝试次数
-@property (nonatomic) NSInteger tryTimes;
+// 重试次数
+@property (nonatomic) NSInteger retryTimes;
 
 @end
 
@@ -52,6 +55,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
     if (!_manager) {
         _manager = [AFHTTPSessionManager manager];
         _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+        _manager.requestSerializer.timeoutInterval = 120;
     }
     return _manager;
 }
@@ -63,8 +67,33 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
     _timeoutInterval = timeoutInterval;
 }
 
+// 重试次数
+- (NSInteger)retryTimes
+{
+    if (_retryTimes == 0) {
+        _retryTimes = 1;
+    }
+    return _retryTimes;
+}
+
 
 #pragma mark - Private Methods
+
+// 打印调试信息
+- (void)debugLog:(NSString *)strings, ...
+{
+    if (self.debugMode) {
+        NSLog(@"[ OrO ][ NETWORK ][ DEBUG ] %@", strings);
+        va_list list;
+        va_start(list, strings);
+        while (strings != nil) {
+            NSString *string = va_arg(list, NSString *);
+            if (!string) break;
+            NSLog(@"[ OrO ][ NETWORK ][ DEBUG ] %@", string);
+        }
+        va_end(list);
+    }
+}
 
 // 解析 JSON
 - (NSString *)parseJSON:(id)json
@@ -77,17 +106,31 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 }
 
 // 发送请求
-- (void)sendWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params tryTimes:(NSInteger)tryTimes response:(RCTResponseSenderBlock)callback
+- (void)sendWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
-    tryTimes--;
+    if (self.debugMode) { // 调试信息
+        NSLog(@"[ OrO ][ NETWORK ] Request sending with arguments.");
+        
+        if (method == OrONetworkRequestMethodGET) NSLog(@"[ OrO ][ METHOD ] GET");
+        else if (method == OrONetworkRequestMethodPOST) NSLog(@"[ OrO ][ METHOD ] POST");
+        else if (method == OrONetworkRequestMethodDELETE) NSLog(@"[ OrO ][ METHOD ] DELETE");
+        
+        NSLog(@"[ OrO ][ URL ] %@", url);
+        NSLog(@"[ OrO ][ PARAMS ] %@", params);
+        NSLog(@"[ OrO ][ RETRY TIMES ] %@", @(count));
+        NSLog(@"[ OrO ][ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval));
+    }
+    
+    count--;
+    
     switch (method) {
         case OrONetworkRequestMethodGET:
         {
             [self.manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (tryTimes < 1) NSLog(@"%@", error);
-                else [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil tryTimes:tryTimes response:callback];
+                if (count < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil retryTimes:count response:callback];
             }];
         }
             break;
@@ -96,8 +139,8 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             [self.manager POST:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (tryTimes < 1) NSLog(@"%@", error);
-                else [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params tryTimes:tryTimes response:callback];
+                if (count < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:count response:callback];
             }];
         }
             break;
@@ -106,8 +149,8 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             [self.manager DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (tryTimes < 1) NSLog(@"%@", error);
-                else [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params tryTimes:tryTimes response:callback];
+                if (count < 1) NSLog(@"%@", error);
+                else [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:count response:callback];
             }];
         }
             break;
@@ -122,6 +165,15 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 RCT_EXPORT_MODULE(Network)
 
 /**
+ * 调试模式开关
+ *
+ * @param yesOrNo: 开关
+ */
+RCT_EXPORT_METHOD(debugMode:(BOOL)yesOrNo) {
+    self.debugMode = yesOrNo;
+}
+
+/**
  * 设置超时时隔
  *
  * @param sec: 时隔（秒）
@@ -131,13 +183,22 @@ RCT_EXPORT_METHOD(timeoutInterval:(NSNumber *)sec) {
 }
 
 /**
+ * 设置重试次数
+ *
+ * @param count: 次数
+ */
+RCT_EXPORT_METHOD(retryTimes:(NSNumber *)count) {
+    self.retryTimes = count.integerValue;
+}
+
+/**
  * 发送 GET 请求
  *
  * @param url: 请求的地址
  * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(GET:(NSString *)url response:(RCTResponseSenderBlock)callback) {
-    [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil tryTimes:self.tryTimes response:callback];
+    [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil retryTimes:self.retryTimes response:callback];
 }
 
 /**
@@ -148,7 +209,7 @@ RCT_EXPORT_METHOD(GET:(NSString *)url response:(RCTResponseSenderBlock)callback)
  * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
-    [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params tryTimes:self.tryTimes response:callback];
+    [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
 /**
@@ -159,7 +220,7 @@ RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(R
  * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
-    [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params tryTimes:self.tryTimes response:callback];
+    [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
 @end

@@ -42,14 +42,17 @@ public class Network extends ReactContextBaseJavaModule {
 
     //region Member Variables
 
+    // 调试模式
+    private boolean debugMode = false;
+
     // 请求队列
     private RequestQueue queue = Volley.newRequestQueue(getReactApplicationContext());
 
     // 超时时隔
-    private int timeoutInterval = 60;
+    private int timeoutInterval = 120000;
 
-    // 尝试次数
-    private int tryTimes = 1;
+    // 重试次数
+    private int retryTimes = 1;
 
     //endregion
 
@@ -65,18 +68,51 @@ public class Network extends ReactContextBaseJavaModule {
 
     //region Private Methods
 
-    // 发送请求
-    private void send(int method, String url, JSONObject params, int tryTimes, Callback callback) {
+    // 打印调试信息
+    private void debugLog(String ... strings) {
+        if (debugMode) {
+            for (String string : strings) {
+                Log.i("OrO", "[ OrO ][ NETWORK ][ DEBUG ] " + string);
+            }
+        }
+    }
 
-        tryTimes--;
-        int finalRetryTimes = tryTimes;
+    // 发送请求
+    private void send(int method, String url, JSONObject params, int retryTimes, Callback callback) {
+
+        if (debugMode) { // 调试信息
+            Log.i("OrO", "[ OrO ][ NETWORK ] Request sending with arguments.");
+
+            switch (method) {
+                case 0:
+                    Log.i("OrO", "[ OrO ][ METHOD ] GET");
+                    break;
+                case 1:
+                    Log.i("OrO", "[ OrO ][ METHOD ] POST");
+                    break;
+                case 3:
+                    Log.i("OrO", "[ OrO ][ METHOD ] DELETE");
+                    break;
+                default:
+                    break;
+            }
+
+            Log.i("OrO", "[ OrO ][ URL ] " + url);
+            Log.i("OrO", "[ OrO ][ PARAMS ] " + params.toString());
+            Log.i("OrO", "[ OrO ][ RETRY TIMES ] " + String.valueOf(retryTimes));
+            Log.i("OrO", "[ OrO ][ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+        }
+
+        retryTimes--;
+        int count = retryTimes;
+
         JsonObjectRequest request = new JsonObjectRequest(method, url, params, response -> {
             callback.invoke(response.toString());
         }, error -> {
-            if (finalRetryTimes < 1) {
+            if (count < 1) {
                 Log.v("OrO", error.toString());
             } else {
-                send(method, url, params, finalRetryTimes, callback);
+                send(method, url, params, count, callback);
             }
         }) {// 重写解析服务器返回的数据
 
@@ -104,8 +140,19 @@ public class Network extends ReactContextBaseJavaModule {
      *
      * @param sec 时隔（秒）
      */
+    @ReactMethod
     public void timeoutInterval(int sec) {
         timeoutInterval = sec;
+    }
+
+    /**
+     * 设置重试次数
+     *
+     * @param count 次数
+     */
+    @ReactMethod
+    public void retryTimes(int count) {
+        retryTimes = count;
     }
 
     /**
@@ -116,7 +163,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void GET(String url, Callback callback) {
-        send(Request.Method.GET, url, null, tryTimes, callback);
+        send(Request.Method.GET, url, null, retryTimes, callback);
     }
 
     /**
@@ -128,7 +175,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
-        send(Request.Method.POST, url, params, tryTimes, callback);
+        send(Request.Method.POST, url, params, retryTimes, callback);
     }
 
     /**
@@ -140,7 +187,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void DELETE(String url, JSONObject params, Callback callback) {
-        send(Request.Method.DELETE, url, params, tryTimes, callback);
+        send(Request.Method.DELETE, url, params, retryTimes, callback);
     }
 
     //endregion
