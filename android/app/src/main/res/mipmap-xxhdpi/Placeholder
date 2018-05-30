@@ -20,6 +20,10 @@
 # THE SOFTWARE.
 #
 
+# --- This is a useless file that can be deleted. ---
+# --- This is a useless file that can be deleted. ---
+# --- This is a useless file that can be deleted. ---
+
 #!/bin/bash
 
 # 进入 Shell 脚本所在目录
@@ -27,29 +31,12 @@ path=$(dirname $_)
 path=${path/\./$(pwd)}
 cd $path
 
-# 进入 React-Native 目录（工程根目录）
-cd ../
-
-# 移除占位符文件
-rm -rf resources/image/Placeholder
-rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
-rm -rf android/app/src/main/res/mipmap-hdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-mdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-xhdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-xxhdpi/Placeholder
-rm -rf ios/OrO/Classes/Base/Placeholder
-rm -rf ios/OrO/Classes/Model/Placeholder
-
-# 删除残留文件
-rm -rf android/.gradle/
-rm -rf android/.idea/
-rm -rf android/build/
-rm -rf android/app/app.iml
-rm -rf android/app/build/
-rm -rf android/local.properties
-
-# 删除构建工具包，删除缓存
-yarn clean
+# 移除本文件
+rm -rf Placeholder
 
 # 退出脚本
 exit 0
+
+# --- This is a useless file that can be deleted. ---
+# --- This is a useless file that can be deleted. ---
+# --- This is a useless file that can be deleted. ---
