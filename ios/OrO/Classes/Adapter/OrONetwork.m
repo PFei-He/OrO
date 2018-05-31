@@ -115,7 +115,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
         else if (method == OrONetworkRequestMethodPOST) [self debugLog:@"[ METHOD ] POST", nil];
         else if (method == OrONetworkRequestMethodDELETE) [self debugLog:@"[ METHOD ] DELETE", nil];
         
-        [self debugLog:[NSString stringWithFormat:@"[ URL ] %@", url], [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)], nil]
+        [self debugLog:[NSString stringWithFormat:@"[ URL ] %@", url], [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)], nil];
     }
     
     count--;
