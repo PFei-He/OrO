@@ -24,14 +24,13 @@
 
 # 进入 Shell 脚本所在目录
 path=$(dirname $_)
-path=${path/\./$(pwd)}
 cd $path
 
 # 进入 React-Native 目录（工程根目录）
 cd ../
 
 # 安装 React-Native
-$npm install -g react-native-cli
+sudo npm install -g react-native-cli
 
 # 退出脚本
 exit 0

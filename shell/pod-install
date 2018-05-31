@@ -24,7 +24,6 @@
 
 # 进入 Shell 脚本所在目录
 path=$(dirname $_)
-path=${path/\./$(pwd)}
 cd $path
 
 # 进入 React-Native 目录（工程根目录）
@@ -34,7 +33,7 @@ cd ../
 cd ios/
 
 # 安装 Pod 类库包
-pod install
+sudo pod install
 
 # 退出脚本
 exit 0

@@ -24,14 +24,13 @@
 
 # 进入 Shell 脚本所在目录
 path=$(dirname $_)
-path=${path/\./$(pwd)}
 cd $path
 
 # 进入 React-Native 目录（工程根目录）
 cd ../
 
 # 安装 yarn
-npm install -g yarn
+sudo npm install -g yarn
 
 # 退出脚本
 exit 0

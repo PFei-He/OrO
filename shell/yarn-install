@@ -24,24 +24,23 @@
 
 # 进入 Shell 脚本所在目录
 path=$(dirname $_)
-path=${path/\./$(pwd)}
 cd $path
 
 # 进入 React-Native 目录（工程根目录）
 cd ../
 
 # 移除占位符文件
-rm -rf resources/image/Placeholder
-rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
-rm -rf android/app/src/main/res/mipmap-hdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-mdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-xhdpi/Placeholder
-rm -rf android/app/src/main/res/mipmap-xxhdpi/Placeholder
-rm -rf ios/OrO/Classes/Base/Placeholder
-rm -rf ios/OrO/Classes/Model/Placeholder
+sudo rm -rf resources/image/Placeholder
+sudo rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
+sudo rm -rf android/app/src/main/res/mipmap-hdpi/Placeholder
+sudo rm -rf android/app/src/main/res/mipmap-mdpi/Placeholder
+sudo rm -rf android/app/src/main/res/mipmap-xhdpi/Placeholder
+sudo rm -rf android/app/src/main/res/mipmap-xxhdpi/Placeholder
+sudo rm -rf ios/OrO/Classes/Base/Placeholder
+sudo rm -rf ios/OrO/Classes/Model/Placeholder
 
 # 安装构建工具包
-yarn install
+sudo yarn install
 
 # 退出脚本
 exit 0
