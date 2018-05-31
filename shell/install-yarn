@@ -30,7 +30,7 @@ cd $path
 cd ../
 
 # 安装 yarn
-sudo npm install -g yarn
+npm install -g yarn
 
 # 退出脚本
 exit 0

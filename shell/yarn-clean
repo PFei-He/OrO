@@ -30,25 +30,25 @@ cd $path
 cd ../
 
 # 移除占位符文件
-sudo rm -rf resources/image/Placeholder
-sudo rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
-sudo rm -rf android/app/src/main/res/mipmap-hdpi/Placeholder
-sudo rm -rf android/app/src/main/res/mipmap-mdpi/Placeholder
-sudo rm -rf android/app/src/main/res/mipmap-xhdpi/Placeholder
-sudo rm -rf android/app/src/main/res/mipmap-xxhdpi/Placeholder
-sudo rm -rf ios/OrO/Classes/Base/Placeholder
-sudo rm -rf ios/OrO/Classes/Model/Placeholder
+rm -rf resources/image/Placeholder
+rm -rf android/app/src/main/java/top/faylib/oro/model/Placeholder
+rm -rf android/app/src/main/res/mipmap-hdpi/Placeholder
+rm -rf android/app/src/main/res/mipmap-mdpi/Placeholder
+rm -rf android/app/src/main/res/mipmap-xhdpi/Placeholder
+rm -rf android/app/src/main/res/mipmap-xxhdpi/Placeholder
+rm -rf ios/OrO/Classes/Base/Placeholder
+rm -rf ios/OrO/Classes/Model/Placeholder
 
 # 删除残留文件
-sudo rm -rf android/.gradle/
-sudo rm -rf android/.idea/
-sudo rm -rf android/build/
-sudo rm -rf android/app/app.iml
-sudo rm -rf android/app/build/
-sudo rm -rf android/local.properties
+rm -rf android/.gradle/
+rm -rf android/.idea/
+rm -rf android/build/
+rm -rf android/app/app.iml
+rm -rf android/app/build/
+rm -rf android/local.properties
 
 # 删除构建工具包，删除缓存
-sudo yarn clean
+yarn clean
 
 # 退出脚本
 exit 0

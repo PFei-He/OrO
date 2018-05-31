@@ -30,7 +30,7 @@ cd $path
 cd ../
 
 # 安装 React-Native
-sudo npm install -g react-native-cli
+npm install -g react-native-cli
 
 # 退出脚本
 exit 0

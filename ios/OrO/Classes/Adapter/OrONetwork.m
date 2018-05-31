@@ -83,13 +83,13 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 - (void)debugLog:(NSString *)strings, ...
 {
     if (self.debugMode) {
-        NSLog(@"[ OrO ][ NETWORK ][ DEBUG ] %@", strings);
+        NSLog(@"[ OrO ][ NETWORK ][ DEBUG ]%@.", strings);
         va_list list;
         va_start(list, strings);
         while (strings != nil) {
             NSString *string = va_arg(list, NSString *);
             if (!string) break;
-            NSLog(@"[ OrO ][ NETWORK ][ DEBUG ] %@", string);
+            NSLog(@"[ OrO ][ NETWORK ][ DEBUG ]%@.", string);
         }
         va_end(list);
     }
@@ -109,16 +109,13 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 - (void)sendWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
     if (self.debugMode) { // 调试信息
-        NSLog(@"[ OrO ][ NETWORK ] Request sending with arguments.");
+        [self debugLog:@" Request sending with arguments", nil];
         
-        if (method == OrONetworkRequestMethodGET) NSLog(@"[ OrO ][ METHOD ] GET");
-        else if (method == OrONetworkRequestMethodPOST) NSLog(@"[ OrO ][ METHOD ] POST");
-        else if (method == OrONetworkRequestMethodDELETE) NSLog(@"[ OrO ][ METHOD ] DELETE");
+        if (method == OrONetworkRequestMethodGET) [self debugLog:@"[ METHOD ] GET", nil];
+        else if (method == OrONetworkRequestMethodPOST) [self debugLog:@"[ METHOD ] POST", nil];
+        else if (method == OrONetworkRequestMethodDELETE) [self debugLog:@"[ METHOD ] DELETE", nil];
         
-        NSLog(@"[ OrO ][ URL ] %@", url);
-        NSLog(@"[ OrO ][ PARAMS ] %@", params);
-        NSLog(@"[ OrO ][ RETRY TIMES ] %@", @(count));
-        NSLog(@"[ OrO ][ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval));
+        [self debugLog:[NSString stringWithFormat:@"[ URL ] %@", url], [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)], nil]
     }
     
     count--;
@@ -129,7 +126,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             [self.manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (count < 1) NSLog(@"%@", error);
+                if (count < 1) [self debugLog:@" Request failure", nil];
                 else [self sendWithMethod:OrONetworkRequestMethodGET url:url params:nil retryTimes:count response:callback];
             }];
         }
@@ -139,7 +136,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             [self.manager POST:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (count < 1) NSLog(@"%@", error);
+                if (count < 1) [self debugLog:@" Request failure", nil];
                 else [self sendWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:count response:callback];
             }];
         }
@@ -149,7 +146,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             [self.manager DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 callback(@[[self parseJSON:responseObject]]);
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                if (count < 1) NSLog(@"%@", error);
+                if (count < 1) [self debugLog:@" Request failure", nil];
                 else [self sendWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:count response:callback];
             }];
         }

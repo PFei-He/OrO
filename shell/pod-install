@@ -33,7 +33,7 @@ cd ../
 cd ios/
 
 # 安装 Pod 类库包
-sudo pod install
+pod install
 
 # 退出脚本
 exit 0

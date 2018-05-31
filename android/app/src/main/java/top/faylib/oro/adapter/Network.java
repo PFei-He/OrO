@@ -72,7 +72,7 @@ public class Network extends ReactContextBaseJavaModule {
     private void debugLog(String ... strings) {
         if (debugMode) {
             for (String string : strings) {
-                Log.i("OrO", "[ OrO ][ NETWORK ][ DEBUG ] " + string);
+                Log.i("OrO", "[ OrO ][ NETWORK ][ DEBUG ]" + string + ".");
             }
         }
     }
@@ -81,26 +81,23 @@ public class Network extends ReactContextBaseJavaModule {
     private void send(int method, String url, JSONObject params, int retryTimes, Callback callback) {
 
         if (debugMode) { // 调试信息
-            Log.i("OrO", "[ OrO ][ NETWORK ] Request sending with arguments.");
+            debugLog(" Request sending with arguments");
 
             switch (method) {
                 case 0:
-                    Log.i("OrO", "[ OrO ][ METHOD ] GET");
+                    debugLog("[ METHOD ] GET");
                     break;
                 case 1:
-                    Log.i("OrO", "[ OrO ][ METHOD ] POST");
+                    debugLog("[ METHOD ] POST");
                     break;
                 case 3:
-                    Log.i("OrO", "[ OrO ][ METHOD ] DELETE");
+                    debugLog("[ METHOD ] DELETE");
                     break;
                 default:
                     break;
             }
 
-            Log.i("OrO", "[ OrO ][ URL ] " + url);
-            Log.i("OrO", "[ OrO ][ PARAMS ] " + ((params==null)?"null":params.toString()));
-            Log.i("OrO", "[ OrO ][ RETRY TIMES ] " + String.valueOf(retryTimes));
-            Log.i("OrO", "[ OrO ][ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+            debugLog("[ URL ] " + url, "[ PARAMS ] " + ((params==null)?"null":params.toString()), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
         }
 
         retryTimes--;
@@ -110,7 +107,7 @@ public class Network extends ReactContextBaseJavaModule {
             callback.invoke(response.toString());
         }, error -> {
             if (count < 1) {
-                Log.i("OrO", error.toString());
+                debugLog(" Request failure");
             } else {
                 send(method, url, params, count, callback);
             }
