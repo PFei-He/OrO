@@ -78,38 +78,38 @@ public class Network extends ReactContextBaseJavaModule {
     }
 
     // 发送请求
-    private void send(int method, String url, JSONObject params, int retryTimes, Callback callback) {
+    private void requset(int method, String url, JSONObject params, int retryTimes, Callback callback) {
 
-        if (debugMode) { // 调试信息
-            debugLog(" Request sending with arguments");
+        debugLog(" Request sending with arguments");
 
-            switch (method) {
-                case 0:
-                    debugLog("[ METHOD ] GET");
-                    break;
-                case 1:
-                    debugLog("[ METHOD ] POST");
-                    break;
-                case 3:
-                    debugLog("[ METHOD ] DELETE");
-                    break;
-                default:
-                    break;
-            }
-
-            debugLog("[ URL ] " + url, "[ PARAMS ] " + ((params==null)?"null":params.toString()), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+        switch (method) {
+            case 0:
+                debugLog("[ METHOD ] GET");
+                break;
+            case 1:
+                debugLog("[ METHOD ] POST");
+                break;
+            case 3:
+                debugLog("[ METHOD ] DELETE");
+                break;
+            default:
+                break;
         }
+
+        debugLog("[ URL ] " + url, "[ PARAMS ] " + ((params==null)?"null":params.toString()), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
 
         retryTimes--;
         int count = retryTimes;
 
         JsonObjectRequest request = new JsonObjectRequest(method, url, params, response -> {
+            debugLog(" Request success", "[ URL ] " + url);
             callback.invoke(response.toString());
         }, error -> {
             if (count < 1) {
-                debugLog(" Request failure");
+                debugLog(" Request failure", "[ URL ] " + url);
+                callback.invoke(error.toString());
             } else {
-                send(method, url, params, count, callback);
+                requset(method, url, params, count, callback);
             }
         }) {// 重写解析服务器返回的数据
 
@@ -170,7 +170,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void GET(String url, Callback callback) {
-        send(Request.Method.GET, url, null, retryTimes, callback);
+        requset(Request.Method.GET, url, null, retryTimes, callback);
     }
 
     /**
@@ -182,7 +182,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
-        send(Request.Method.POST, url, params, retryTimes, callback);
+        requset(Request.Method.POST, url, params, retryTimes, callback);
     }
 
     /**
@@ -194,7 +194,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void DELETE(String url, JSONObject params, Callback callback) {
-        send(Request.Method.DELETE, url, params, retryTimes, callback);
+        requset(Request.Method.DELETE, url, params, retryTimes, callback);
     }
 
     //endregion
