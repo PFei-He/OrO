@@ -27,8 +27,10 @@ package top.faylib.oro.adapter;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.react.bridge.Callback;
@@ -36,6 +38,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Network extends ReactContextBaseJavaModule {
@@ -53,6 +56,9 @@ public class Network extends ReactContextBaseJavaModule {
 
     // 重试次数
     private int retryTimes = 1;
+
+    // 请求结果状态码
+    private int statusCode;
 
     //endregion
 
@@ -75,6 +81,19 @@ public class Network extends ReactContextBaseJavaModule {
                 Log.i("OrO", "[ OrO ][ NETWORK ][ DEBUG ]" + string + ".");
             }
         }
+    }
+
+    // 获取方法名
+    private String getMethodName() {
+
+        /* p.s. STACK_TRACE_INDEX = 3是因为Android是下标为3获取方法名， 纯Java是下标为2获取方法名。 */
+        final int STACK_TRACE_INDEX = 3;
+
+        // 获取调用的函数堆栈信息
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        StackTraceElement targetElement = stackTrace[STACK_TRACE_INDEX];
+
+        return targetElement.getMethodName();
     }
 
     // 发送请求
@@ -102,24 +121,55 @@ public class Network extends ReactContextBaseJavaModule {
         int count = retryTimes;
 
         JsonObjectRequest request = new JsonObjectRequest(method, url, params, response -> {
-            debugLog(" Request success", "[ URL ] " + url);
-            callback.invoke(response.toString());
+            parse(url, statusCode, response, callback);
         }, error -> {
             if (count < 1) {
-                debugLog(" Request failure", "[ URL ] " + url);
-                callback.invoke(error.toString());
+                parse(url, statusCode, error, callback);
             } else {
                 requset(method, url, params, count, callback);
             }
         }) {// 重写解析服务器返回的数据
-
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                statusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
+            }
         };
 
+        // 添加请求超时时隔
         request.setRetryPolicy(new DefaultRetryPolicy(timeoutInterval,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
+        // 添加请求到队列
         queue.add(request);
+    }
+
+    // 数据处理
+    private void parse(String url, int statusCode, Object result, Callback callback) {
+
+        // 处理请求结果
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("statusCode", statusCode);
+            jsonObject.put("result", result);
+        } catch (JSONException e) {
+//            e.printStackTrace();
+        }
+
+        // 回调结果到 Web 端
+        if (statusCode == 200) {
+            if (result instanceof JSONObject) {
+                debugLog(" Request success", "[ URL ] " + url);
+                callback.invoke(jsonObject.toString());
+            } else {
+                debugLog(" Request success but not JSON data", "[ URL ] " + url);
+                callback.invoke(jsonObject.toString());
+            }
+        } else {
+            debugLog(" Request failure", "[ URL ] " + url);
+            callback.invoke(jsonObject.toString());
+        }
     }
 
     //endregion
@@ -139,6 +189,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void debugMode(boolean trueOrFalse) {
+        debugLog(" '" + getMethodName() + "' run", " Debug Mode Open");
         debugMode = trueOrFalse;
     }
 
@@ -149,6 +200,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void timeoutInterval(int sec) {
+        debugLog(" '" + getMethodName() + "' run");
         timeoutInterval = sec;
     }
 
@@ -159,6 +211,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void retryTimes(int count) {
+        debugLog(" '" + getMethodName() + "' run");
         retryTimes = count;
     }
 
@@ -170,6 +223,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void GET(String url, Callback callback) {
+        debugLog(" '" + getMethodName() + "' run");
         requset(Request.Method.GET, url, null, retryTimes, callback);
     }
 
@@ -182,6 +236,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
+        debugLog(" '" + getMethodName() + "' run");
         requset(Request.Method.POST, url, params, retryTimes, callback);
     }
 
@@ -194,6 +249,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void DELETE(String url, JSONObject params, Callback callback) {
+        debugLog(" '" + getMethodName() + "' run");
         requset(Request.Method.DELETE, url, params, retryTimes, callback);
     }
 
