@@ -189,8 +189,8 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void debugMode(boolean trueOrFalse) {
-        debugLog(" '" + getMethodName() + "' run", " Debug Mode Open");
         debugMode = trueOrFalse;
+        debugLog(" '" + getMethodName() + "' run", " Debug Mode Open");
     }
 
     /**

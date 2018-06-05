@@ -187,8 +187,8 @@ RCT_EXPORT_MODULE(Network)
  * @param yesOrNo: 开关
  */
 RCT_EXPORT_METHOD(debugMode:(BOOL)yesOrNo) {
-    [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], @" Debug Mode Open", nil];
     self.debugMode = yesOrNo;
+    [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], @" Debug Mode Open", nil];
 }
 
 /**
