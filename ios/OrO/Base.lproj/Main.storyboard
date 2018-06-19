@@ -107,7 +107,6 @@
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="openNative:" destination="Fiw-zq-olh" eventType="touchDown" id="7Iw-X8-Ut9"/>
-                                    <segue destination="6WO-v5-5s8" kind="presentation" identifier="native" id="bvs-4N-Ua9"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -127,6 +126,7 @@
                     <navigationItem key="navigationItem" title="OrO" id="3hb-jK-olO"/>
                     <connections>
                         <segue destination="ll1-cV-jbR" kind="presentation" identifier="hybrid" id="rtv-uA-Zrd"/>
+                        <segue destination="6WO-v5-5s8" kind="presentation" identifier="native" id="Dak-dT-Jtd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fiw-zq-olh" userLabel="First Responder" sceneMemberID="firstResponder"/>
