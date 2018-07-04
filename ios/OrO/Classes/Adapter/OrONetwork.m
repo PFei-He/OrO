@@ -182,9 +182,8 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 RCT_EXPORT_MODULE(Network)
 
 /**
- * 设置调试模式
- *
- * @param yesOrNo: 开关
+ 设置调试模式
+ @param yesOrNo: 开关
  */
 RCT_EXPORT_METHOD(debugMode:(BOOL)yesOrNo) {
     self.debugMode = yesOrNo;
@@ -192,9 +191,8 @@ RCT_EXPORT_METHOD(debugMode:(BOOL)yesOrNo) {
 }
 
 /**
- * 设置超时时隔
- *
- * @param sec: 时隔（秒）
+ 设置超时时隔
+ @param sec: 时隔（秒）
  */
 RCT_EXPORT_METHOD(timeoutInterval:(NSNumber *)sec) {
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], nil];
@@ -202,9 +200,8 @@ RCT_EXPORT_METHOD(timeoutInterval:(NSNumber *)sec) {
 }
 
 /**
- * 设置重试次数
- *
- * @param count: 次数
+ 设置重试次数
+ @param count: 次数
  */
 RCT_EXPORT_METHOD(retryTimes:(NSNumber *)count) {
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], nil];
@@ -212,10 +209,9 @@ RCT_EXPORT_METHOD(retryTimes:(NSNumber *)count) {
 }
 
 /**
- * 发送 GET 请求
- *
- * @param url: 请求的地址
- * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
+ 发送 GET 请求
+ @param url: 请求的地址
+ @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(GET:(NSString *)url response:(RCTResponseSenderBlock)callback) {
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], nil];
@@ -223,11 +219,10 @@ RCT_EXPORT_METHOD(GET:(NSString *)url response:(RCTResponseSenderBlock)callback)
 }
 
 /**
- * 发送 POST 请求
- *
- * @param url: 请求的地址
- * @param params: 请求的参数
- * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
+ 发送 POST 请求
+ @param url: 请求的地址
+ @param params: 请求的参数
+ @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], nil];
@@ -235,11 +230,10 @@ RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(R
 }
 
 /**
- * 发送 DELETE 请求
- *
- * @param url: 请求的地址
- * @param params: 请求的参数
- * @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
+ 发送 DELETE 请求
+ @param url: 请求的地址
+ @param params: 请求的参数
+ @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], nil];
