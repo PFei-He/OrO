@@ -184,18 +184,16 @@ public class Network extends ReactContextBaseJavaModule {
 
     /**
      * 设置调试模式
-     *
-     * @param trueOrFalse 开关
+     * @param openOrNot 开关
      */
     @ReactMethod
-    public void debugMode(boolean trueOrFalse) {
-        debugMode = trueOrFalse;
+    public void debugMode(boolean openOrNot) {
+        debugMode = openOrNot;
         debugLog(" '" + getMethodName() + "' run", " Debug Mode Open");
     }
 
     /**
      * 设置超时时隔
-     *
      * @param sec 时隔（秒）
      */
     @ReactMethod
@@ -206,7 +204,6 @@ public class Network extends ReactContextBaseJavaModule {
 
     /**
      * 设置重试次数
-     *
      * @param count 次数
      */
     @ReactMethod
@@ -217,7 +214,6 @@ public class Network extends ReactContextBaseJavaModule {
 
     /**
      * 发送 GET 请求
-     *
      * @param url 请求的地址
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
      */
@@ -229,7 +225,6 @@ public class Network extends ReactContextBaseJavaModule {
 
     /**
      * 发送 POST 请求
-     *
      * @param url 请求的地址
      * @param params 请求的参数
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
@@ -242,7 +237,6 @@ public class Network extends ReactContextBaseJavaModule {
 
     /**
      * 发送 DELETE 请求
-     *
      * @param url 请求的地址
      * @param params 请求的参数
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调

@@ -183,10 +183,10 @@ RCT_EXPORT_MODULE(Network)
 
 /**
  设置调试模式
- @param yesOrNo: 开关
+ @param openOrNot: 开关
  */
-RCT_EXPORT_METHOD(debugMode:(BOOL)yesOrNo) {
-    self.debugMode = yesOrNo;
+RCT_EXPORT_METHOD(debugMode:(BOOL)openOrNot) {
+    self.debugMode = openOrNot;
     [self debugLog:[NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], @" Debug Mode Open", nil];
 }
 
