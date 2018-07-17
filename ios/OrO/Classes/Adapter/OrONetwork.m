@@ -244,4 +244,13 @@ RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:
     [self requsetWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
+/**
+ 重置请求
+ */
+RCT_EXPORT_METHOD(reset) {
+    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    self.timeoutInterval = 120;
+    self.retryTimes = 1;
+}
+
 @end

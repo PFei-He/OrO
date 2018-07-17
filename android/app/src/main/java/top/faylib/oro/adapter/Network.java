@@ -324,5 +324,15 @@ public class Network extends ReactContextBaseJavaModule {
         } catch (JSONException e) { e.printStackTrace(); }
     }
 
+    /**
+     * 重置请求
+     */
+    @ReactMethod
+    public void reset() {
+        debugLog(" '" + getMethodName() + "' run");
+        timeoutInterval = 120000;
+        retryTimes = 1;
+    }
+
     //endregion
 }

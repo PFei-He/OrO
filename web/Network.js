@@ -78,5 +78,12 @@ export default {
      */
 	DELETE: function (url, params, response) {
 		NativeModules.Network.DELETE(url, params, response)
+	},
+
+	/**
+	 * 重置请求
+	 */
+	reset: function () {
+		NativeModules.Network.reset();
 	}
 }
