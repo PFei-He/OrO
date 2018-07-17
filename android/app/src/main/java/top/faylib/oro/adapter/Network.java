@@ -24,6 +24,7 @@
 
 package top.faylib.oro.adapter;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -38,8 +39,16 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class Network extends ReactContextBaseJavaModule {
 
@@ -74,6 +83,46 @@ public class Network extends ReactContextBaseJavaModule {
 
     //region Private Methods
 
+    // JSONObject 格式转 Map 格式
+    private static Map<String, Object> toMap(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Iterator<String> keys = jsonObject.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonObject.get(key);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            map.put(key, value);
+        }   return map;
+    }
+
+    // JSONArray 格式转 List 格式
+    private static List<Object> toList(JSONArray jsonArray) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < jsonArray.length(); i++) {
+            Object value = jsonArray.get(i);
+            if (value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            } else if (value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }   return list;
+    }
+
+    // 拼接参数
+    private String appendParameter(String url, Map<String, String> params) {
+        Uri uri = Uri.parse(url);
+        Uri.Builder builder = uri.buildUpon();
+        for(Map.Entry<String, String> entry : params.entrySet()) {
+            builder.appendQueryParameter(entry.getKey(), entry.getValue());
+        }
+        return builder.build().getQuery();
+    }
+
     // 打印调试信息
     private void debugLog(String ... strings) {
         if (debugMode) {
@@ -97,7 +146,7 @@ public class Network extends ReactContextBaseJavaModule {
     }
 
     // 发送请求
-    private void requset(int method, String url, JSONObject params, int retryTimes, Callback callback) {
+    private void requset(int method, String url, Map params, int retryTimes, Callback callback) {
 
         debugLog(" Request sending with arguments");
 
@@ -115,12 +164,12 @@ public class Network extends ReactContextBaseJavaModule {
                 break;
         }
 
-        debugLog("[ URL ] " + url, "[ PARAMS ] " + ((params==null)?"null":params.toString()), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+        debugLog("[ URL ] " + url, "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
 
         retryTimes--;
         int count = retryTimes;
 
-        JsonObjectRequest request = new JsonObjectRequest(method, url, params, response -> {
+        JsonObjectRequest request = new JsonObjectRequest(method, url, null, response -> {
             parse(url, statusCode, response, callback);
         }, error -> {
             if (count < 1) {
@@ -128,11 +177,29 @@ public class Network extends ReactContextBaseJavaModule {
             } else {
                 requset(method, url, params, count, callback);
             }
-        }) {// 重写解析服务器返回的数据
+        }) {
+            // 重写解析服务器返回的数据
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 statusCode = response.statusCode;
                 return super.parseNetworkResponse(response);
+            }
+
+            // 重写请求体的内容类型
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
+            }
+
+            // 重写请求体
+            @Override
+            public byte[] getBody() {
+                try {
+                    final String string = appendParameter(url, params);
+                    return string.getBytes(PROTOCOL_CHARSET);
+                } catch (UnsupportedEncodingException uee) {
+                    return null;
+                }
             }
         };
 
@@ -215,12 +282,16 @@ public class Network extends ReactContextBaseJavaModule {
     /**
      * 发送 GET 请求
      * @param url 请求的地址
+     * @param params 请求的参数
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
      */
     @ReactMethod
-    public void GET(String url, Callback callback) {
-        debugLog(" '" + getMethodName() + "' run");
-        requset(Request.Method.GET, url, null, retryTimes, callback);
+    public void GET(String url, JSONObject params, Callback callback) {
+        try {
+            debugLog(" '" + getMethodName() + "' run");
+            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            requset(Request.Method.GET, url, map, retryTimes, callback);
+        } catch (JSONException e) { e.printStackTrace(); }
     }
 
     /**
@@ -231,8 +302,11 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
-        debugLog(" '" + getMethodName() + "' run");
-        requset(Request.Method.POST, url, params, retryTimes, callback);
+        try {
+            debugLog(" '" + getMethodName() + "' run");
+            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            requset(Request.Method.POST, url, map, retryTimes, callback);
+        } catch (JSONException e) { e.printStackTrace(); }
     }
 
     /**
@@ -243,8 +317,11 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void DELETE(String url, JSONObject params, Callback callback) {
-        debugLog(" '" + getMethodName() + "' run");
-        requset(Request.Method.DELETE, url, params, retryTimes, callback);
+        try {
+            debugLog(" '" + getMethodName() + "' run");
+            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            requset(Request.Method.DELETE, url, map, retryTimes, callback);
+        } catch (JSONException e) { e.printStackTrace(); }
     }
 
     //endregion

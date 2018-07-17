@@ -32,7 +32,7 @@ import {
 import Network from './web/Network';
 
 Network.debugMode(true);
-Network.GET('http://www.weather.com.cn/data/sk/101010100.html', function (value) {
+Network.GET('http://www.weather.com.cn/data/sk/101010100.html', null, function (value) {
   alert(value)
 });
 

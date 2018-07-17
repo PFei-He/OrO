@@ -53,10 +53,11 @@ export default {
 	/**
      * 发送 GET 请求
      * @param url 请求的地址
+     * @param params 请求的参数
      * @param response 响应消息
      */
-	GET: function (url, response) {
-		NativeModules.Network.GET(url, response)
+	GET: function (url, params, response) {
+		NativeModules.Network.GET(url, params, response)
 	},
 
 	/**
