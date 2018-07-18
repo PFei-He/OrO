@@ -197,18 +197,18 @@ RCT_EXPORT_METHOD(debugMode:(BOOL)openOrNot) {
  设置超时时隔
  @param sec: 时隔（秒）
  */
-RCT_EXPORT_METHOD(timeoutInterval:(NSNumber *)sec) {
+RCT_EXPORT_METHOD(timeoutInterval:(NSInteger)sec) {
     DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
-    self.timeoutInterval = sec.integerValue;
+    self.timeoutInterval = sec / 1000;
 }
 
 /**
  设置重试次数
  @param count: 次数
  */
-RCT_EXPORT_METHOD(retryTimes:(NSNumber *)count) {
+RCT_EXPORT_METHOD(retryTimes:(NSInteger)count) {
     DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
-    self.retryTimes = count.integerValue;
+    self.retryTimes = count;
 }
 
 /**
