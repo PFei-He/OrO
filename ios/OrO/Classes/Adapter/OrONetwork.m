@@ -111,11 +111,9 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 // 发送请求
 - (void)requsetWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
-    DLog(@"[ REQUEST ] Start sending");
-
-    if (method == OrONetworkRequestMethodGET) DLog([NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] GET", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
-    else if (method == OrONetworkRequestMethodPOST) DLog([NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] POST", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
-    else if (method == OrONetworkRequestMethodDELETE) DLog([NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] DELETE", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
+    if (method == OrONetworkRequestMethodGET) DLog(@"[ REQUEST ] Start sending", [NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] GET", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
+    else if (method == OrONetworkRequestMethodPOST) DLog(@"[ REQUEST ] Start sending", [NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] POST", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
+    else if (method == OrONetworkRequestMethodDELETE) DLog(@"[ REQUEST ] Start sending", [NSString stringWithFormat:@"[ URL ] %@", url], @"[ METHOD ] DELETE", [NSString stringWithFormat:@"[ PARAMS ] %@", params], [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)], [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)]);
 
     count--;
     

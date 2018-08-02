@@ -148,17 +148,15 @@ public class Network extends ReactContextBaseJavaModule {
     // 发送请求
     private void requset(int method, String url, Map params, int retryTimes, Callback callback) {
 
-        debugLog("[ REQUEST ] Start sending");
-
         switch (method) {
             case 0:
-                debugLog("[ URL ] " + url, "[ METHOD ] GET", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog("[ REQUEST ] Start sending", "[ URL ] " + url, "[ METHOD ] GET", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             case 1:
-                debugLog("[ URL ] " + url, "[ METHOD ] POST", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog("[ REQUEST ] Start sending", "[ URL ] " + url, "[ METHOD ] POST", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             case 3:
-                debugLog("[ URL ] " + url, "[ METHOD ] DELETE", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog("[ REQUEST ] Start sending", "[ URL ] " + url, "[ METHOD ] DELETE", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             default:
                 break;
