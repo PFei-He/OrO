@@ -127,7 +127,7 @@ public class Network extends ReactContextBaseJavaModule {
     private void debugLog(String ... strings) {
         if (debugMode) {
             for (String string : strings) {
-                Log.i("OrO", "[ OrO ][ NETWORK ][ DEBUG ]" + string + ".");
+                Log.i("OrO", "[ OrO ][ NETWORK ]" + string + ".");
             }
         }
     }
@@ -148,7 +148,7 @@ public class Network extends ReactContextBaseJavaModule {
     // 发送请求
     private void requset(int method, String url, Map params, int retryTimes, Callback callback) {
 
-        debugLog(" Request sending with arguments");
+        debugLog("[ REQUEST ] Start sending");
 
         switch (method) {
             case 0:
@@ -227,14 +227,14 @@ public class Network extends ReactContextBaseJavaModule {
         // 回调结果到 Web 端
         if (statusCode == 200) {
             if (result instanceof JSONObject) {
-                debugLog(" Request success", "[ URL ] " + url);
+                debugLog("[ REQUEST ] Success", "[ URL ] " + url);
                 callback.invoke(jsonObject.toString());
             } else {
-                debugLog(" Request success but not JSON data", "[ URL ] " + url);
+                debugLog("[ REQUEST ] Success but not JSON data", "[ URL ] " + url);
                 callback.invoke(jsonObject.toString());
             }
         } else {
-            debugLog(" Request failure", "[ URL ] " + url);
+            debugLog("[ REQUEST ] Failure", "[ URL ] " + url);
             callback.invoke(jsonObject.toString());
         }
     }
@@ -256,7 +256,7 @@ public class Network extends ReactContextBaseJavaModule {
     @ReactMethod
     public void debugMode(boolean openOrNot) {
         debugMode = openOrNot;
-        debugLog(" '" + getMethodName() + "' run", " Debug Mode Open");
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run", " Debug Mode Open");
     }
 
     /**
@@ -265,7 +265,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void timeoutInterval(int sec) {
-        debugLog(" '" + getMethodName() + "' run");
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
         timeoutInterval = sec;
     }
 
@@ -275,7 +275,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void retryTimes(int count) {
-        debugLog(" '" + getMethodName() + "' run");
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
         retryTimes = count;
     }
 
@@ -288,7 +288,7 @@ public class Network extends ReactContextBaseJavaModule {
     @ReactMethod
     public void GET(String url, JSONObject params, Callback callback) {
         try {
-            debugLog(" '" + getMethodName() + "' run");
+            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
             Map map = toMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.GET, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
@@ -303,7 +303,7 @@ public class Network extends ReactContextBaseJavaModule {
     @ReactMethod
     public void POST(String url, JSONObject params, Callback callback) {
         try {
-            debugLog(" '" + getMethodName() + "' run");
+            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
             Map map = toMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.POST, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
@@ -318,7 +318,7 @@ public class Network extends ReactContextBaseJavaModule {
     @ReactMethod
     public void DELETE(String url, JSONObject params, Callback callback) {
         try {
-            debugLog(" '" + getMethodName() + "' run");
+            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
             Map map = toMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.DELETE, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
@@ -329,7 +329,7 @@ public class Network extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reset() {
-        debugLog(" '" + getMethodName() + "' run");
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
         timeoutInterval = 120000;
         retryTimes = 1;
     }

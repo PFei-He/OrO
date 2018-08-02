@@ -86,13 +86,13 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 - (void)debugLog:(NSString *)strings, ...
 {
     if (self.debugMode) {
-        NSLog(@"[ OrO ][ NETWORK ][ DEBUG ]%@.", strings);
+        NSLog(@"[ OrO ][ NETWORK ]%@.", strings);
         va_list list;
         va_start(list, strings);
         while (strings != nil) {
             NSString *string = va_arg(list, NSString *);
             if (!string) break;
-            NSLog(@"[ OrO ][ NETWORK ][ DEBUG ]%@.", string);
+            NSLog(@"[ OrO ][ NETWORK ]%@.", string);
         }
         va_end(list);
     }
@@ -111,7 +111,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 // 发送请求
 - (void)requsetWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
-    DLog(@" Request sending with arguments");
+    DLog(@"[ REQUEST ] Start sending");
     
     if (method == OrONetworkRequestMethodGET) DLog(@"[ METHOD ] GET");
     else if (method == OrONetworkRequestMethodPOST) DLog(@"[ METHOD ] POST");
@@ -167,14 +167,14 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
     // 回调结果到 Web 端
     if (statusCode == 200) {
         if ([result isKindOfClass:[NSDictionary class]]) {
-            DLog(@" Request success", [NSString stringWithFormat:@"[ URL ] %@", url]);
+            DLog(@"[ REQUEST ] Success", [NSString stringWithFormat:@"[ URL ] %@", url]);
             callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
         } else {
-            DLog(@" Request success but not JSON data", [NSString stringWithFormat:@"[ URL ] %@", url]);
+            DLog(@"[ REQUEST ] Success but not JSON data", [NSString stringWithFormat:@"[ URL ] %@", url]);
             callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
         }
     } else {
-        DLog(@" Request failure", [NSString stringWithFormat:@"[ URL ] %@", url]);
+        DLog(@"[ REQUEST ] Failure", [NSString stringWithFormat:@"[ URL ] %@", url]);
         callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
     }
 }
@@ -190,7 +190,7 @@ RCT_EXPORT_MODULE(Network)
  */
 RCT_EXPORT_METHOD(debugMode:(BOOL)openOrNot) {
     self.debugMode = openOrNot;
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)], @" Debug Mode Open");
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)], @" Debug Mode Open");
 }
 
 /**
@@ -198,7 +198,7 @@ RCT_EXPORT_METHOD(debugMode:(BOOL)openOrNot) {
  @param sec: 时隔（秒）
  */
 RCT_EXPORT_METHOD(timeoutInterval:(NSInteger)sec) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     self.timeoutInterval = sec / 1000;
 }
 
@@ -207,7 +207,7 @@ RCT_EXPORT_METHOD(timeoutInterval:(NSInteger)sec) {
  @param count: 次数
  */
 RCT_EXPORT_METHOD(retryTimes:(NSInteger)count) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     self.retryTimes = count;
 }
 
@@ -218,7 +218,7 @@ RCT_EXPORT_METHOD(retryTimes:(NSInteger)count) {
  @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(GET:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     [self requsetWithMethod:OrONetworkRequestMethodGET url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
@@ -229,7 +229,7 @@ RCT_EXPORT_METHOD(GET:(NSString *)url params:(NSDictionary *)params response:(RC
  @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     [self requsetWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
@@ -240,7 +240,7 @@ RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(R
  @param callback: 与 JavaScript 通信的变量，用于响应消息后回调
  */
 RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     [self requsetWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
@@ -248,7 +248,7 @@ RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:
  重置请求
  */
 RCT_EXPORT_METHOD(reset) {
-    DLog([NSString stringWithFormat:@" '%@' run", NSStringFromSelector(_cmd)]);
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     self.timeoutInterval = 120;
     self.retryTimes = 1;
 }
