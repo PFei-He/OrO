@@ -57,8 +57,8 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 {
     if (!_manager) {
         _manager = [AFHTTPSessionManager manager];
-        _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
         _manager.requestSerializer.timeoutInterval = 120;
+        _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
     }
     return _manager;
 }
@@ -164,14 +164,14 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
     if (statusCode == 200) {
         if ([result isKindOfClass:[NSDictionary class]]) {
             DLog(@"[ REQUEST ] Success", [NSString stringWithFormat:@"[ URL ] %@", url]);
-            callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
+            callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
         } else {
             DLog(@"[ REQUEST ] Success but not JSON data", [NSString stringWithFormat:@"[ URL ] %@", url]);
-            callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
+            callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
         }
     } else {
         DLog(@"[ REQUEST ] Failure", [NSString stringWithFormat:@"[ URL ] %@", url]);
-        callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
+        callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
     }
 }
 
@@ -205,6 +205,17 @@ RCT_EXPORT_METHOD(timeoutInterval:(NSInteger)sec) {
 RCT_EXPORT_METHOD(retryTimes:(NSInteger)count) {
     DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
     self.retryTimes = count;
+}
+
+/**
+ 设置重试次数
+ @param headers: 请求头
+ */
+RCT_EXPORT_METHOD(setHeaders:(NSDictionary *)headers) {
+    DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
+    [headers enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL * _Nonnull stop) {
+        [self.manager.requestSerializer setValue:obj forHTTPHeaderField:key];
+    }];
 }
 
 /**

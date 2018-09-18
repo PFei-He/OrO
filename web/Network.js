@@ -49,6 +49,14 @@ export default {
 	},
 
 	/**
+     * 设置请求头
+     * @param headers 请求头参数
+     */
+	setHeaders: function (headers) {
+		NativeModules.Network.setHeaders(headers)
+	},
+
+	/**
      * 发送 GET 请求
      * @param url 请求的地址
      * @param params 请求的参数

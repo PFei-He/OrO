@@ -58,6 +58,9 @@ public class Network extends ReactContextBaseJavaModule {
     // 请求队列
     private RequestQueue queue = Volley.newRequestQueue(getReactApplicationContext());
 
+    // 请求头
+    private Map headers;
+
     // 超时时隔
     private int timeoutInterval = 120000;
 
@@ -172,11 +175,10 @@ public class Network extends ReactContextBaseJavaModule {
                 requset(method, url, params, count, callback);
             }
         }) {
-            // 重写解析服务器返回的数据
+            // 重写请求头
             @Override
-            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                statusCode = response.statusCode;
-                return super.parseNetworkResponse(response);
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return headers;
             }
 
             // 重写请求体的内容类型
@@ -194,6 +196,13 @@ public class Network extends ReactContextBaseJavaModule {
                 } catch (UnsupportedEncodingException uee) {
                     return null;
                 }
+            }
+
+            // 重写解析服务器返回的数据
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                statusCode = response.statusCode;
+                return super.parseNetworkResponse(response);
             }
         };
 
@@ -213,7 +222,7 @@ public class Network extends ReactContextBaseJavaModule {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("statusCode", statusCode);
-            jsonObject.put("result", result);
+            jsonObject.put("response", result.toString());
         } catch (JSONException e) {
 //            e.printStackTrace();
         }
@@ -271,6 +280,18 @@ public class Network extends ReactContextBaseJavaModule {
     public void retryTimes(int count) {
         debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
         retryTimes = count;
+    }
+
+    /**
+     * 设置重试次数
+     * @param headers 请求头
+     */
+    @ReactMethod
+    public void setHeaders(JSONObject headers) {
+        try {
+            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
+            this.headers = toMap(headers!=null ? headers : new JSONObject("{}"));
+        } catch (JSONException e) { e.printStackTrace(); }
     }
 
     /**
