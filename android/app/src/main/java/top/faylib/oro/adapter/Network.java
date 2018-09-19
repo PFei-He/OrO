@@ -58,14 +58,14 @@ public class Network extends ReactContextBaseJavaModule {
     // 请求队列
     private RequestQueue queue = Volley.newRequestQueue(getReactApplicationContext());
 
-    // 请求头
-    private Map headers;
-
     // 超时时隔
     private int timeoutInterval = 120000;
 
     // 重试次数
     private int retryTimes = 1;
+
+    // 请求头
+    private Map<String, String> headers;
 
     // 请求结果状态码
     private int statusCode;
@@ -84,9 +84,19 @@ public class Network extends ReactContextBaseJavaModule {
 
     //region Private Methods
 
-    // JSONObject 格式转 Map 格式
-    private static Map<String, Object> toMap(JSONObject jsonObject) throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
+    // JSONObject 格式转 Map<String, String> 格式
+    private static Map<String, String> toStringMap(JSONObject jsonObject) throws JSONException {
+        Map<String, String> map = new HashMap<>();
+        Iterator<String> keys = jsonObject.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            map.put(key, jsonObject.getString(key));
+        }   return map;
+    }
+
+    // JSONObject 格式转 Map<String, Object> 格式
+    private static Map<String, Object> toObjectMap(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
         Iterator<String> keys = jsonObject.keys();
         while(keys.hasNext()) {
             String key = keys.next();
@@ -94,7 +104,7 @@ public class Network extends ReactContextBaseJavaModule {
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
             } else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
+                value = toObjectMap((JSONObject) value);
             }
             map.put(key, value);
         }   return map;
@@ -102,13 +112,13 @@ public class Network extends ReactContextBaseJavaModule {
 
     // JSONArray 格式转 List 格式
     private static List<Object> toList(JSONArray jsonArray) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for(int i = 0; i < jsonArray.length(); i++) {
             Object value = jsonArray.get(i);
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
             } else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
+                value = toObjectMap((JSONObject) value);
             }
             list.add(value);
         }   return list;
@@ -178,11 +188,12 @@ public class Network extends ReactContextBaseJavaModule {
             // 重写请求头
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> finalHeaders = new HashMap<>();
+                finalHeaders.putAll(super.getHeaders());
                 if (headers != null && !headers.isEmpty()) {
-                    return headers;
-                } else {
-                    return super.getHeaders();
+                    finalHeaders.putAll(headers);
                 }
+                return finalHeaders;
             }
 
             // 重写请求体的内容类型
@@ -227,9 +238,7 @@ public class Network extends ReactContextBaseJavaModule {
         try {
             jsonObject.put("statusCode", statusCode);
             jsonObject.put("response", result.toString());
-        } catch (JSONException e) {
-//            e.printStackTrace();
-        }
+        } catch (JSONException e) { e.printStackTrace(); }
 
         // 回调结果到 Web 端
         if (statusCode == 200) {
@@ -294,7 +303,7 @@ public class Network extends ReactContextBaseJavaModule {
     public void setHeaders(JSONObject headers) {
         try {
             debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            this.headers = toMap(headers!=null ? headers : new JSONObject("{}"));
+            this.headers = toStringMap(headers!=null ? headers : new JSONObject("{}"));
         } catch (JSONException e) { e.printStackTrace(); }
     }
 
@@ -308,7 +317,7 @@ public class Network extends ReactContextBaseJavaModule {
     public void GET(String url, JSONObject params, Callback callback) {
         try {
             debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.GET, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
     }
@@ -323,7 +332,7 @@ public class Network extends ReactContextBaseJavaModule {
     public void POST(String url, JSONObject params, Callback callback) {
         try {
             debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.POST, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
     }
@@ -338,7 +347,7 @@ public class Network extends ReactContextBaseJavaModule {
     public void DELETE(String url, JSONObject params, Callback callback) {
         try {
             debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toMap(params!=null ? params : new JSONObject("{}"));
+            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
             requset(Request.Method.DELETE, url, map, retryTimes, callback);
         } catch (JSONException e) { e.printStackTrace(); }
     }
