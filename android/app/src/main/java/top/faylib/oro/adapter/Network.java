@@ -65,7 +65,7 @@ public class Network extends ReactContextBaseJavaModule {
     private int retryTimes = 1;
 
     // 请求头
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
 
     // 请求结果状态码
     private int statusCode;
@@ -161,13 +161,28 @@ public class Network extends ReactContextBaseJavaModule {
 
         switch (method) {
             case 0:
-                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying", "[ URL ] " + url, "[ METHOD ] GET", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying",
+                        "[ URL ] " + url,
+                        "[ METHOD ] GET",
+                        "[ PARAMS ] " + params.toString(),
+                        "[ RETRY TIMES ] " + String.valueOf(retryTimes),
+                        "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             case 1:
-                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying", "[ URL ] " + url, "[ METHOD ] POST", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying",
+                        "[ URL ] " + url,
+                        "[ METHOD ] POST",
+                        "[ PARAMS ] " + params.toString(),
+                        "[ RETRY TIMES ] " + String.valueOf(retryTimes),
+                        "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             case 3:
-                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying", "[ URL ] " + url, "[ METHOD ] DELETE", "[ PARAMS ] " + params.toString(), "[ RETRY TIMES ] " + String.valueOf(retryTimes), "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
+                debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying",
+                        "[ URL ] " + url,
+                        "[ METHOD ] DELETE",
+                        "[ PARAMS ] " + params.toString(),
+                        "[ RETRY TIMES ] " + String.valueOf(retryTimes),
+                        "[ TIMEOUT INTERVAL ] " + String.valueOf(timeoutInterval/1000));
                 break;
             default:
                 break;
@@ -188,12 +203,9 @@ public class Network extends ReactContextBaseJavaModule {
             // 重写请求头
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> finalHeaders = new HashMap<>();
-                finalHeaders.putAll(super.getHeaders());
-                if (headers != null && !headers.isEmpty()) {
-                    finalHeaders.putAll(headers);
-                }
-                return finalHeaders;
+                headers.putAll(super.getHeaders());
+                debugLog("[ HEADERS ] " + headers.toString());
+                return headers;
             }
 
             // 重写请求体的内容类型
@@ -303,7 +315,7 @@ public class Network extends ReactContextBaseJavaModule {
     public void setHeaders(JSONObject headers) {
         try {
             debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            this.headers = toStringMap(headers!=null ? headers : new JSONObject("{}"));
+            this.headers.putAll(toStringMap(headers!=null ? headers : new JSONObject("{}")));
         } catch (JSONException e) { e.printStackTrace(); }
     }
 
