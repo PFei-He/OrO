@@ -25,6 +25,7 @@ package top.faylib.oro.adapter;
 import android.net.Uri;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -36,6 +37,14 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
+import com.facebook.react.bridge.ReadableType;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,44 +93,186 @@ public class Network extends ReactContextBaseJavaModule {
 
     //region Private Methods
 
-    // JSONObject 格式转 Map<String, String> 格式
-    private static Map<String, String> toStringMap(JSONObject jsonObject) throws JSONException {
-        Map<String, String> map = new HashMap<>();
-        Iterator<String> keys = jsonObject.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            map.put(key, jsonObject.getString(key));
-        }   return map;
-    }
-
-    // JSONObject 格式转 Map<String, Object> 格式
-    private static Map<String, Object> toObjectMap(JSONObject jsonObject) throws JSONException {
-        Map<String, Object> map = new HashMap<>();
-        Iterator<String> keys = jsonObject.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
+    // 将 JSONObject 类型转换为 WritableMap 类型
+    private static WritableMap convertJsonToMap(JSONObject jsonObject) throws JSONException {
+        WritableMap map = new WritableNativeMap();
+        Iterator<String> iterator = jsonObject.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
             Object value = jsonObject.get(key);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = toObjectMap((JSONObject) value);
+            if (value instanceof JSONObject) {
+                map.putMap(key, convertJsonToMap((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                map.putArray(key, convertJsonToArray((JSONArray) value));
+            } else if (value instanceof Boolean) {
+                map.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Integer) {
+                map.putInt(key, (Integer) value);
+            } else if (value instanceof Double) {
+                map.putDouble(key, (Double) value);
+            } else if (value instanceof String) {
+                map.putString(key, (String) value);
+            } else {
+                map.putString(key, value.toString());
             }
-            map.put(key, value);
-        }   return map;
+        }
+        return map;
     }
 
-    // JSONArray 格式转 List 格式
-    private static List<Object> toList(JSONArray jsonArray) throws JSONException {
-        List<Object> list = new ArrayList<>();
-        for(int i = 0; i < jsonArray.length(); i++) {
+    // 将 JSONArray 类型转换为 WritableArray 类型
+    private static WritableArray convertJsonToArray(JSONArray jsonArray) throws JSONException {
+        WritableArray array = new WritableNativeArray();
+        for (int i = 0; i < jsonArray.length(); i++) {
             Object value = jsonArray.get(i);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = toObjectMap((JSONObject) value);
+            if (value instanceof JSONObject) {
+                array.pushMap(convertJsonToMap((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                array.pushArray(convertJsonToArray((JSONArray) value));
+            } else if (value instanceof Boolean) {
+                array.pushBoolean((Boolean) value);
+            } else if (value instanceof Integer) {
+                array.pushInt((Integer) value);
+            } else if (value instanceof Double) {
+                array.pushDouble((Double) value);
+            } else if (value instanceof String) {
+                array.pushString((String) value);
+            } else {
+                array.pushString(value.toString());
             }
-            list.add(value);
-        }   return list;
+        }
+        return array;
+    }
+
+    // 将 ReadableMap 类型转换为 JSONObject 类型
+    private static JSONObject convertMapToJson(ReadableMap readableMap) throws JSONException {
+        JSONObject object = new JSONObject();
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            switch (readableMap.getType(key)) {
+                case Null:
+                    object.put(key, JSONObject.NULL);
+                    break;
+                case Boolean:
+                    object.put(key, readableMap.getBoolean(key));
+                    break;
+                case Number:
+                    object.put(key, readableMap.getDouble(key));
+                    break;
+                case String:
+                    object.put(key, readableMap.getString(key));
+                    break;
+                case Map:
+                    object.put(key, convertMapToJson(readableMap.getMap(key)));
+                    break;
+                case Array:
+                    object.put(key, convertArrayToJson(readableMap.getArray(key)));
+                    break;
+            }
+        }
+        return object;
+    }
+
+    // 将 ReadableArray 类型转换为 JSONArray 类型
+    private static JSONArray convertArrayToJson(ReadableArray readableArray) throws JSONException {
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < readableArray.size(); i++) {
+            switch (readableArray.getType(i)) {
+                case Null:
+                    break;
+                case Boolean:
+                    array.put(readableArray.getBoolean(i));
+                    break;
+                case Number:
+                    array.put(readableArray.getDouble(i));
+                    break;
+                case String:
+                    array.put(readableArray.getString(i));
+                    break;
+                case Map:
+                    array.put(convertMapToJson(readableArray.getMap(i)));
+                    break;
+                case Array:
+                    array.put(convertArrayToJson(readableArray.getArray(i)));
+                    break;
+            }
+        }
+        return array;
+    }
+
+    // 将 ReadableMap 类型转换为 Map<String, Object> 类型
+    private static Map<String, Object> convertMapToMap(ReadableMap readableMap) {
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+        Map<String, Object> map = new HashMap<>();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            ReadableType type = readableMap.getType(key);
+            switch (type) {
+                case Null:
+                    map.put(key, null);
+                    break;
+                case Boolean:
+                    map.put(key, readableMap.getBoolean(key));
+                    break;
+                case Number:
+                    map.put(key, readableMap.getDouble(key));
+                    break;
+                case String:
+                    map.put(key, readableMap.getString(key));
+                    break;
+                case Map:
+                    map.put(key, convertMapToMap(readableMap.getMap(key)));
+                    break;
+                case Array:
+                    map.put(key, convertArrayToList(readableMap.getArray(key)));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
+            }
+        }
+        return map;
+    }
+
+    // 将 ReadableMap 类型转换为 Map<String, String> 类型
+    private static Map<String, String> convertMapToStringMap(ReadableMap readableMap) {
+        ReadableMapKeySetIterator iterator = readableMap.keySetIterator();
+        Map<String, String> map = new HashMap<>();
+        while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            map.put(key, readableMap.getString(key));
+        }
+        return map;
+    }
+
+    // 将 ReadableArray 类型转换为 List<Object> 类型
+    private static List<Object> convertArrayToList(ReadableArray readableArray) {
+        List<Object> list = new ArrayList<>(readableArray.size());
+        for (int i = 0; i < readableArray.size(); i++) {
+            ReadableType indexType = readableArray.getType(i);
+            switch(indexType) {
+                case Null:
+                    list.add(i, null);
+                    break;
+                case Boolean:
+                    list.add(i, readableArray.getBoolean(i));
+                    break;
+                case Number:
+                    list.add(i, readableArray.getDouble(i));
+                    break;
+                case String:
+                    list.add(i, readableArray.getString(i));
+                    break;
+                case Map:
+                    list.add(i, convertMapToMap(readableArray.getMap(i)));
+                    break;
+                case Array:
+                    list.add(i, convertArrayToList(readableArray.getArray(i)));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Could not convert object at index " + i + ".");
+            }
+        }
+        return list;
     }
 
     // 拼接参数
@@ -157,7 +308,7 @@ public class Network extends ReactContextBaseJavaModule {
     }
 
     // 发送请求
-    private void requset(int method, String url, Map params, int retryTimes, Callback callback) {
+    private void send(int method, String url, Map params, int retryTimes, Callback callback) {
 
         switch (method) {
             case 0:
@@ -197,7 +348,7 @@ public class Network extends ReactContextBaseJavaModule {
             if (count < 1) {
                 parse(url, statusCode, error, callback);
             } else {
-                requset(method, url, params, count, callback);
+                send(method, url, params, count, callback);
             }
         }) {
             // 重写请求头
@@ -256,7 +407,9 @@ public class Network extends ReactContextBaseJavaModule {
         if (statusCode == 200) {
             if (result instanceof JSONObject) {
                 debugLog("[ REQUEST ] Success", "[ URL ] " + url);
-                callback.invoke(jsonObject.toString());
+                try {
+                    callback.invoke(convertJsonToMap((JSONObject) result));
+                } catch (JSONException e) { e.printStackTrace(); }
             } else {
                 debugLog("[ REQUEST ] Success but not JSON data", "[ URL ] " + url);
                 callback.invoke(jsonObject.toString());
@@ -312,11 +465,9 @@ public class Network extends ReactContextBaseJavaModule {
      * @param headers 请求头
      */
     @ReactMethod
-    public void setHeaders(JSONObject headers) {
-        try {
-            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            this.headers.putAll(toStringMap(headers!=null ? headers : new JSONObject("{}")));
-        } catch (JSONException e) { e.printStackTrace(); }
+    public void setHeaders(ReadableMap headers) {
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
+        this.headers.putAll(headers != null ? convertMapToStringMap(headers) : new HashMap());
     }
 
     /**
@@ -326,12 +477,10 @@ public class Network extends ReactContextBaseJavaModule {
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
      */
     @ReactMethod
-    public void GET(String url, JSONObject params, Callback callback) {
-        try {
-            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
-            requset(Request.Method.GET, url, map, retryTimes, callback);
-        } catch (JSONException e) { e.printStackTrace(); }
+    public void GET(String url, ReadableMap params, Callback callback) {
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
+        Map map = params != null ? convertMapToMap(params) : new HashMap();
+        send(Request.Method.GET, url, map, retryTimes, callback);
     }
 
     /**
@@ -341,12 +490,10 @@ public class Network extends ReactContextBaseJavaModule {
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
      */
     @ReactMethod
-    public void POST(String url, JSONObject params, Callback callback) {
-        try {
-            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
-            requset(Request.Method.POST, url, map, retryTimes, callback);
-        } catch (JSONException e) { e.printStackTrace(); }
+    public void POST(String url, ReadableMap params, Callback callback) {
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
+        Map map = params != null ? convertMapToMap(params) : new HashMap();
+        send(Request.Method.POST, url, map, retryTimes, callback);
     }
 
     /**
@@ -356,12 +503,10 @@ public class Network extends ReactContextBaseJavaModule {
      * @param callback 与 JavaScript 通信的变量，用于响应消息后回调
      */
     @ReactMethod
-    public void DELETE(String url, JSONObject params, Callback callback) {
-        try {
-            debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
-            Map map = toObjectMap(params!=null ? params : new JSONObject("{}"));
-            requset(Request.Method.DELETE, url, map, retryTimes, callback);
-        } catch (JSONException e) { e.printStackTrace(); }
+    public void DELETE(String url, ReadableMap params, Callback callback) {
+        debugLog("[ FUNCTION ] '" + getMethodName() + "' run");
+        Map map = params != null ? convertMapToMap(params) : new HashMap();
+        send(Request.Method.DELETE, url, map, retryTimes, callback);
     }
 
     /**
