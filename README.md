@@ -63,7 +63,42 @@ Detail / 说明
 
 
 ### Placeholder / 占位符文件
-占位符文件对于整个工程并没有实际作用，只是用于上传工程到 GitHub 时可以将空文件夹上传，开发者可于下载工程后将所有的占位符文件删除，对工程运行完全没有影响。
+占位符文件对于整个工程并没有实际作用，只是用于上传工程到 `GitHub` 时可以将空文件夹上传，开发者可于下载工程后将所有的占位符文件删除，对工程运行完全没有影响。
+
+
+### Port / 监听端口
+`React-Native` 默认监听本地端口 `localhost:8081`，但某些情况下，`8081` 端口可能会被占用，需更改监听的端口。`8082` 端口也被 `React-Native` 使用，可以同时更改。
+* 通过命令修改
+```
+$react-native start --port=8888
+```
+
+* 通过文件修改（构建工程后，在以下文件搜索 `8081` 和 `8082` 端口，并更改为自己需要监听的端口）
+```
+// 8081 端口
+node_modules/dom-walk/example/static/index.html
+node_modules/react-native/Libraries/Core/Devtools/getDevServer.js
+node_modules/react-native/Libraries/RCTTest/RCTTestRunner.m
+node_modules/react-native/Libraries/Utilities/HMRClient.js
+node_modules/react-native/local-cli/runAndroid/runAndroid.js
+node_modules/react-native/local-cli/runIOS/runIOS.js
+node_modules/react-native/local-cli/server/middleware/statusPageMiddleware.js
+node_modules/react-native/local-cli/server/server.js
+node_modules/react-native/local-cli/util/isPackagerRunning.js
+node_modules/react-native/React/Base/RCTBridgeDelegate.h
+node_modules/react-native/React/Base/RCTDefines.h
+node_modules/react-native/React/DevSupport/RCTInspectorDevServerHelper.mm
+node_modules/react-native/React/React.xcodeproj/project.pbxproj
+node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/common/DebugServerException.java
+node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/AndroidInfoHelpers.java
+node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/packagerconnection/PackagerConnectionSettings.java
+
+// 8082 端口
+node_modules/react-native/React/DevSupport/RCTInspectorDevServerHelper.mm
+node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/modules/systeminfo/AndroidInfoHelpers.java
+node_modules/react-native/ReactCommon/cxxreact/JSCExecutor.cpp
+node_modules/react-transform-hmr/README.md
+```
 
 
 
