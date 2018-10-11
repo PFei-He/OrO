@@ -27,7 +27,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import Network from './web/Network';
+import Network from './web/vendor/adapter/network';
 
 Network.debugMode(true);
 Network.GET('http://www.weather.com.cn/data/sk/101010100.html', null, function (value) {

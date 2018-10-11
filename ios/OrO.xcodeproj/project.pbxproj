@@ -38,7 +38,7 @@
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6559291820AA782500EBB944 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6559291620AA782500EBB944 /* Main.storyboard */; };
 		6559297120AAB05C00EBB944 /* OrOAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6559297020AAB05C00EBB944 /* OrOAdapter.m */; };
-		65DF86EC20A9A12400333131 /* OrONetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86EA20A9A12400333131 /* OrONetwork.m */; };
+		65AF7642216EE7050037CEC1 /* OrONetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 65AF7641216EE7050037CEC1 /* OrONetwork.m */; };
 		65DF86EF20A9A16900333131 /* OrOMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86EE20A9A16900333131 /* OrOMainViewController.m */; };
 		65DF86F220A9A19C00333131 /* OrONativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86F120A9A19C00333131 /* OrONativeViewController.m */; };
 		65DF86F520A9A1AD00333131 /* OrOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86F420A9A1AD00333131 /* OrOWebViewController.m */; };
@@ -351,8 +351,8 @@
 		6559291720AA782500EBB944 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = OrO/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6559296F20AAB05C00EBB944 /* OrOAdapter.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOAdapter.h; sourceTree = "<group>"; tabWidth = 4; };
 		6559297020AAB05C00EBB944 /* OrOAdapter.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrOAdapter.m; sourceTree = "<group>"; tabWidth = 4; };
-		65DF86EA20A9A12400333131 /* OrONetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrONetwork.m; sourceTree = "<group>"; tabWidth = 4; };
-		65DF86EB20A9A12400333131 /* OrONetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrONetwork.h; sourceTree = "<group>"; tabWidth = 4; };
+		65AF7640216EE7050037CEC1 /* OrONetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrONetwork.h; sourceTree = "<group>"; };
+		65AF7641216EE7050037CEC1 /* OrONetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrONetwork.m; sourceTree = "<group>"; };
 		65DF86ED20A9A16900333131 /* OrOMainViewController.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOMainViewController.h; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86EE20A9A16900333131 /* OrOMainViewController.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrOMainViewController.m; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86F020A9A19C00333131 /* OrONativeViewController.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrONativeViewController.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -509,6 +509,7 @@
 				65DF86E320A9A0A400333131 /* Adapter */,
 				65DF86E420A9A0A400333131 /* Base */,
 				65B25AE120AC3B5900109305 /* Model */,
+				65AF763E216EE7050037CEC1 /* Vendor */,
 				65DF86BD20A9A0A400333131 /* ViewController */,
 			);
 			name = OrO;
@@ -584,6 +585,24 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		65AF763E216EE7050037CEC1 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				65AF763F216EE7050037CEC1 /* Adapter */,
+			);
+			name = Vendor;
+			path = OrO/Classes/Vendor;
+			sourceTree = "<group>";
+		};
+		65AF763F216EE7050037CEC1 /* Adapter */ = {
+			isa = PBXGroup;
+			children = (
+				65AF7640216EE7050037CEC1 /* OrONetwork.h */,
+				65AF7641216EE7050037CEC1 /* OrONetwork.m */,
+			);
+			path = Adapter;
+			sourceTree = "<group>";
+		};
 		65B25AE120AC3B5900109305 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -611,8 +630,6 @@
 			children = (
 				6559296F20AAB05C00EBB944 /* OrOAdapter.h */,
 				6559297020AAB05C00EBB944 /* OrOAdapter.m */,
-				65DF86EB20A9A12400333131 /* OrONetwork.h */,
-				65DF86EA20A9A12400333131 /* OrONetwork.m */,
 			);
 			name = Adapter;
 			path = OrO/Classes/Adapter;
@@ -1264,11 +1281,11 @@
 			files = (
 				65DF86F520A9A1AD00333131 /* OrOWebViewController.m in Sources */,
 				65DF86F220A9A19C00333131 /* OrONativeViewController.m in Sources */,
-				65DF86EC20A9A12400333131 /* OrONetwork.m in Sources */,
 				6559297120AAB05C00EBB944 /* OrOAdapter.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				65DF86EF20A9A16900333131 /* OrOMainViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				65AF7642216EE7050037CEC1 /* OrONetwork.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
