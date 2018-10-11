@@ -185,14 +185,14 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
     if (statusCode == 200) {
         if ([result isKindOfClass:[NSDictionary class]]) {
             DLog(@"[ REQUEST ] Success", [NSString stringWithFormat:@"[ URL ] %@", url]);
-            callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
+            callback(@[@{@"statusCode": @(statusCode), @"result": result}]);
         } else {
             DLog(@"[ REQUEST ] Success but not JSON data", [NSString stringWithFormat:@"[ URL ] %@", url]);
-            callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
+            callback(@[@{@"statusCode": @(statusCode), @"result": [NSString stringWithFormat:@"%@", result]}]);
         }
     } else {
         DLog(@"[ REQUEST ] Failure", [NSString stringWithFormat:@"[ URL ] %@", url]);
-        callback(@[@{@"statusCode": @(statusCode), @"response": result}]);
+        callback(@[@{@"statusCode": @(statusCode), @"result": [NSString stringWithFormat:@"%@", result]}]);
     }
 }
 

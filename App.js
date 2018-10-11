@@ -30,8 +30,8 @@ import {
 import Network from './web/vendor/adapter/network';
 
 Network.debugMode(true);
-Network.GET('http://www.weather.com.cn/data/sk/101010100.html', null, function (value) {
-  alert(value)
+Network.GET('http://www.weather.com.cn/data/sk/101010100.html', null, function (response) {
+  alert(response)
 });
 
 const instructions = Platform.select({
