@@ -34,16 +34,16 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 
 @interface OrONetwork ()
 
-// 调试模式
+/// 调试模式
 @property (nonatomic, assign) BOOL debugMode;
 
-// 网络请求
+/// 网络请求
 @property (nonatomic, strong) AFHTTPSessionManager *manager;
 
-// 超时时隔
+/// 超时时隔
 @property (nonatomic) NSInteger timeoutInterval;
 
-// 重试次数
+/// 重试次数
 @property (nonatomic) NSInteger retryTimes;
 
 @end
