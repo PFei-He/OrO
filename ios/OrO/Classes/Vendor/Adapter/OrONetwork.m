@@ -111,36 +111,19 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 // 发送请求
 - (void)requsetWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
-    if (method == OrONetworkRequestMethodGET) 
-        DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
+    switch (method) {
+        case OrONetworkRequestMethodGET:
+        {
+            DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
              [NSString stringWithFormat:@"[ URL ] %@", url], 
              @"[ METHOD ] GET",
              [NSString stringWithFormat:@"[ PARAMS ] %@", params],
              [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)],
              [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)],
              [NSString stringWithFormat:@"[ HEADERS ] %@", self.manager.requestSerializer.HTTPRequestHeaders]);
-    else if (method == OrONetworkRequestMethodPOST) 
-        DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
-             [NSString stringWithFormat:@"[ URL ] %@", url], 
-             @"[ METHOD ] POST",
-             [NSString stringWithFormat:@"[ PARAMS ] %@", params],
-             [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)],
-             [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)],
-             [NSString stringWithFormat:@"[ HEADERS ] %@", self.manager.requestSerializer.HTTPRequestHeaders]);
-    else if (method == OrONetworkRequestMethodDELETE) 
-        DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
-             [NSString stringWithFormat:@"[ URL ] %@", url], 
-             @"[ METHOD ] DELETE",
-             [NSString stringWithFormat:@"[ PARAMS ] %@", params],
-             [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)],
-             [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)],
-             [NSString stringWithFormat:@"[ HEADERS ] %@", self.manager.requestSerializer.HTTPRequestHeaders]);
 
-    count--;
-    
-    switch (method) {
-        case OrONetworkRequestMethodGET:
-        {
+            count--;
+
             [self.manager GET:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -151,6 +134,16 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             break;
         case OrONetworkRequestMethodPOST:
         {
+            DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
+             [NSString stringWithFormat:@"[ URL ] %@", url], 
+             @"[ METHOD ] POST",
+             [NSString stringWithFormat:@"[ PARAMS ] %@", params],
+             [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)],
+             [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)],
+             [NSString stringWithFormat:@"[ HEADERS ] %@", self.manager.requestSerializer.HTTPRequestHeaders]);
+
+            count--;
+
             [self.manager POST:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -161,6 +154,16 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
             break;
         case OrONetworkRequestMethodDELETE:
         {
+            DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
+             [NSString stringWithFormat:@"[ URL ] %@", url], 
+             @"[ METHOD ] DELETE",
+             [NSString stringWithFormat:@"[ PARAMS ] %@", params],
+             [NSString stringWithFormat:@"[ RETRY TIMES ] %@", @(count)],
+             [NSString stringWithFormat:@"[ TIMEOUT INTERVAL ] %@", @(self.manager.requestSerializer.timeoutInterval)],
+             [NSString stringWithFormat:@"[ HEADERS ] %@", self.manager.requestSerializer.HTTPRequestHeaders]);
+
+            count--;
+
             [self.manager DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
