@@ -22,6 +22,6 @@
 
 #import <React/RCTBridgeModule.h>
 
-@interface OrONetwork : NSObject <RCTBridgeModule>
+@interface FLNetwork : NSObject <RCTBridgeModule>
 
 @end

@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import top.faylib.oro.adapter.Adapter;
-import top.faylib.oro.adapter.Network;
+import top.faylib.oro.io.Adapter;
+import top.faylib.io.network.Network;
 
 public class ReactPackageImpl implements ReactPackage {
     @Override

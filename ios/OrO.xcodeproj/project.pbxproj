@@ -36,9 +36,9 @@
 		2DCD954D1E0B4F2C00145EB5 /* OrOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* OrOTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		652577B121CB30C1001CFF7D /* FLNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 652577AF21CB30C1001CFF7D /* FLNetwork.m */; };
 		6559291820AA782500EBB944 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6559291620AA782500EBB944 /* Main.storyboard */; };
 		6559297120AAB05C00EBB944 /* OrOAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6559297020AAB05C00EBB944 /* OrOAdapter.m */; };
-		65AF7642216EE7050037CEC1 /* OrONetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 65AF7641216EE7050037CEC1 /* OrONetwork.m */; };
 		65DF86EF20A9A16900333131 /* OrOMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86EE20A9A16900333131 /* OrOMainViewController.m */; };
 		65DF86F220A9A19C00333131 /* OrONativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86F120A9A19C00333131 /* OrONativeViewController.m */; };
 		65DF86F520A9A1AD00333131 /* OrOWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DF86F420A9A1AD00333131 /* OrOWebViewController.m */; };
@@ -348,11 +348,11 @@
 		2D02E4901E0B4A5D006451C7 /* OrO-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OrO-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		652577AF21CB30C1001CFF7D /* FLNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLNetwork.m; sourceTree = "<group>"; };
+		652577B021CB30C1001CFF7D /* FLNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLNetwork.h; sourceTree = "<group>"; };
 		6559291720AA782500EBB944 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = OrO/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6559296F20AAB05C00EBB944 /* OrOAdapter.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOAdapter.h; sourceTree = "<group>"; tabWidth = 4; };
 		6559297020AAB05C00EBB944 /* OrOAdapter.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrOAdapter.m; sourceTree = "<group>"; tabWidth = 4; };
-		65AF7640216EE7050037CEC1 /* OrONetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrONetwork.h; sourceTree = "<group>"; };
-		65AF7641216EE7050037CEC1 /* OrONetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrONetwork.m; sourceTree = "<group>"; };
 		65DF86ED20A9A16900333131 /* OrOMainViewController.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrOMainViewController.h; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86EE20A9A16900333131 /* OrOMainViewController.m */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = OrOMainViewController.m; sourceTree = "<group>"; tabWidth = 4; };
 		65DF86F020A9A19C00333131 /* OrONativeViewController.h */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = OrONativeViewController.h; sourceTree = "<group>"; tabWidth = 4; };
@@ -506,10 +506,10 @@
 			children = (
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				65DF86E320A9A0A400333131 /* Adapter */,
 				65DF86E420A9A0A400333131 /* Base */,
+				65DF86E320A9A0A400333131 /* IO */,
 				65B25AE120AC3B5900109305 /* Model */,
-				65AF763E216EE7050037CEC1 /* Vendor */,
+				652577AC21CB30C1001CFF7D /* Vendor */,
 				65DF86BD20A9A0A400333131 /* ViewController */,
 			);
 			name = OrO;
@@ -565,6 +565,31 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		652577AC21CB30C1001CFF7D /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				652577AD21CB30C1001CFF7D /* IO */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		652577AD21CB30C1001CFF7D /* IO */ = {
+			isa = PBXGroup;
+			children = (
+				652577AE21CB30C1001CFF7D /* Network */,
+			);
+			path = IO;
+			sourceTree = "<group>";
+		};
+		652577AE21CB30C1001CFF7D /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				652577B021CB30C1001CFF7D /* FLNetwork.h */,
+				652577AF21CB30C1001CFF7D /* FLNetwork.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		655928EF20AA709600EBB944 /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -583,24 +608,6 @@
 				6559291620AA782500EBB944 /* Main.storyboard */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		65AF763E216EE7050037CEC1 /* Vendor */ = {
-			isa = PBXGroup;
-			children = (
-				65AF763F216EE7050037CEC1 /* Adapter */,
-			);
-			name = Vendor;
-			path = OrO/Classes/Vendor;
-			sourceTree = "<group>";
-		};
-		65AF763F216EE7050037CEC1 /* Adapter */ = {
-			isa = PBXGroup;
-			children = (
-				65AF7640216EE7050037CEC1 /* OrONetwork.h */,
-				65AF7641216EE7050037CEC1 /* OrONetwork.m */,
-			);
-			path = Adapter;
 			sourceTree = "<group>";
 		};
 		65B25AE120AC3B5900109305 /* Model */ = {
@@ -625,14 +632,14 @@
 			path = OrO/Classes/ViewController;
 			sourceTree = "<group>";
 		};
-		65DF86E320A9A0A400333131 /* Adapter */ = {
+		65DF86E320A9A0A400333131 /* IO */ = {
 			isa = PBXGroup;
 			children = (
 				6559296F20AAB05C00EBB944 /* OrOAdapter.h */,
 				6559297020AAB05C00EBB944 /* OrOAdapter.m */,
 			);
-			name = Adapter;
-			path = OrO/Classes/Adapter;
+			name = IO;
+			path = OrO/Classes/IO;
 			sourceTree = "<group>";
 		};
 		65DF86E420A9A0A400333131 /* Base */ = {
@@ -807,6 +814,10 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = YP2P43BPRF;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1285,7 +1296,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				65DF86EF20A9A16900333131 /* OrOMainViewController.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				65AF7642216EE7050037CEC1 /* OrONetwork.m in Sources */,
+				652577B121CB30C1001CFF7D /* FLNetwork.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1384,8 +1395,11 @@
 			baseConfigurationReference = 0C01D7416239F16F99DE4C41 /* Pods-OrO.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = YP2P43BPRF;
 				INFOPLIST_FILE = OrO/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1396,6 +1410,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = top.faylib.oro;
 				PRODUCT_NAME = OrO;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1405,7 +1420,10 @@
 			baseConfigurationReference = 9368BC11644B9D1741DF4595 /* Pods-OrO.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YP2P43BPRF;
 				INFOPLIST_FILE = OrO/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1416,6 +1434,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = top.faylib.oro;
 				PRODUCT_NAME = OrO;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

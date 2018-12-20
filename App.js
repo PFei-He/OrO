@@ -27,11 +27,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import Network from './web/vendor/adapter/network';
+import Network from './web/vendor/io/network';
 
 Network.debugMode(true);
 Network.GET('http://www.weather.com.cn/data/sk/101010100.html', null, function (response) {
-  alert(response)
+  alert(JSON.stringify(response))
 });
 
 const instructions = Platform.select({

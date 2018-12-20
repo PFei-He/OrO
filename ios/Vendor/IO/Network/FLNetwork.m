@@ -20,25 +20,25 @@
 //  THE SOFTWARE.
 //
 
-#import "OrONetwork.h"
+#import "FLNetwork.h"
 #import <AFNetworking/AFNetworking.h>
 
 #define DLog(args...)\
 [self debugLog:args, nil]
 
-typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
-    OrONetworkRequestMethodGET,
-    OrONetworkRequestMethodPOST,
-    OrONetworkRequestMethodDELETE,
+typedef NS_ENUM(NSUInteger, FLNetworkRequestMethod) {
+    FLNetworkRequestMethodGET,
+    FLNetworkRequestMethodPOST,
+    FLNetworkRequestMethodDELETE,
 };
 
-@interface OrONetwork ()
+@interface FLNetwork ()
 
 /// 调试模式
 @property (nonatomic, assign) BOOL debugMode;
 
 /// 网络请求
-@property (nonatomic, strong) AFHTTPSessionManager *manager;
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 
 /// 超时时隔
 @property (nonatomic) NSInteger timeoutInterval;
@@ -48,25 +48,25 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 
 @end
 
-@implementation OrONetwork
+@implementation FLNetwork
 
 #pragma mark - Setter / Getter Methods
 
 // 网络请求
 - (AFHTTPSessionManager *)manager
 {
-    if (!_manager) {
-        _manager = [AFHTTPSessionManager manager];
-        _manager.requestSerializer.timeoutInterval = 120;
-        _manager.responseSerializer.acceptableContentTypes = [_manager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+    if (!_sessionManager) {
+        _sessionManager = [AFHTTPSessionManager manager];
+        _sessionManager.requestSerializer.timeoutInterval = 120;
+        _sessionManager.responseSerializer.acceptableContentTypes = [_sessionManager.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
     }
-    return _manager;
+    return _sessionManager;
 }
 
 // 超时时隔
 - (void)setTimeoutInterval:(NSInteger)timeoutInterval
 {
-    self.manager.requestSerializer.timeoutInterval = timeoutInterval;
+    self.sessionManager.requestSerializer.timeoutInterval = timeoutInterval;
     _timeoutInterval = timeoutInterval;
 }
 
@@ -86,13 +86,13 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 - (void)debugLog:(NSString *)strings, ...
 {
     if (self.debugMode) {
-        NSLog(@"[ OrO ][ NETWORK ]%@.", strings);
+        NSLog(@"[ FayLIB ][ NETWORK ]%@.", strings);
         va_list list;
         va_start(list, strings);
         while (strings != nil) {
             NSString *string = va_arg(list, NSString *);
             if (!string) break;
-            NSLog(@"[ OrO ][ NETWORK ]%@.", string);
+            NSLog(@"[ FayLIB ][ NETWORK ]%@.", string);
         }
         va_end(list);
     }
@@ -109,10 +109,10 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
 }
 
 // 发送请求
-- (void)requsetWithMethod:(OrONetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
+- (void)requsetWithMethod:(FLNetworkRequestMethod)method url:(NSString *)url params:(NSDictionary *)params retryTimes:(NSInteger)count response:(RCTResponseSenderBlock)callback
 {
     switch (method) {
-        case OrONetworkRequestMethodGET:
+        case FLNetworkRequestMethodGET:
         {
             DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
              [NSString stringWithFormat:@"[ URL ] %@", url], 
@@ -128,11 +128,11 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 if (count < 1) [self parseWithURL:url task:task result:[NSString stringWithFormat:@"%@", error] response:callback];
-                else [self requsetWithMethod:OrONetworkRequestMethodGET url:url params:params retryTimes:count response:callback];
+                else [self requsetWithMethod:FLNetworkRequestMethodGET url:url params:params retryTimes:count response:callback];
             }];
         }
             break;
-        case OrONetworkRequestMethodPOST:
+        case FLNetworkRequestMethodPOST:
         {
             DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
              [NSString stringWithFormat:@"[ URL ] %@", url], 
@@ -148,11 +148,11 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 if (count < 1) [self parseWithURL:url task:task result:[NSString stringWithFormat:@"%@", error] response:callback];
-                else [self requsetWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:count response:callback];
+                else [self requsetWithMethod:FLNetworkRequestMethodPOST url:url params:params retryTimes:count response:callback];
             }];
         }
             break;
-        case OrONetworkRequestMethodDELETE:
+        case FLNetworkRequestMethodDELETE:
         {
             DLog(count == self.retryTimes ? @"[ REQUEST ] Start sending" : @"[ REQUEST ] Retrying",
              [NSString stringWithFormat:@"[ URL ] %@", url], 
@@ -168,7 +168,7 @@ typedef NS_ENUM(NSUInteger, OrONetworkRequestMethod) {
                 [self parseWithURL:url task:task result:responseObject response:callback];
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 if (count < 1) [self parseWithURL:url task:task result:[NSString stringWithFormat:@"%@", error] response:callback];
-                else [self requsetWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:count response:callback];
+                else [self requsetWithMethod:FLNetworkRequestMethodDELETE url:url params:params retryTimes:count response:callback];
             }];
         }
             break;
@@ -250,7 +250,7 @@ RCT_EXPORT_METHOD(setHeaders:(NSDictionary *)headers) {
  */
 RCT_EXPORT_METHOD(GET:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
     DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
-    [self requsetWithMethod:OrONetworkRequestMethodGET url:url params:params retryTimes:self.retryTimes response:callback];
+    [self requsetWithMethod:FLNetworkRequestMethodGET url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
 /**
@@ -261,7 +261,7 @@ RCT_EXPORT_METHOD(GET:(NSString *)url params:(NSDictionary *)params response:(RC
  */
 RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
     DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
-    [self requsetWithMethod:OrONetworkRequestMethodPOST url:url params:params retryTimes:self.retryTimes response:callback];
+    [self requsetWithMethod:FLNetworkRequestMethodPOST url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
 /**
@@ -272,7 +272,7 @@ RCT_EXPORT_METHOD(POST:(NSString *)url params:(NSDictionary *)params response:(R
  */
 RCT_EXPORT_METHOD(DELETE:(NSString *)url params:(NSDictionary *)params response:(RCTResponseSenderBlock)callback) {
     DLog([NSString stringWithFormat:@"[ FUNCTION ] '%@' run", NSStringFromSelector(_cmd)]);
-    [self requsetWithMethod:OrONetworkRequestMethodDELETE url:url params:params retryTimes:self.retryTimes response:callback];
+    [self requsetWithMethod:FLNetworkRequestMethodDELETE url:url params:params retryTimes:self.retryTimes response:callback];
 }
 
 /**

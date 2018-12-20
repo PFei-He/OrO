@@ -100,6 +100,10 @@ node_modules/react-native/ReactCommon/cxxreact/JSCExecutor.cpp
 node_modules/react-transform-hmr/README.md
 ```
 
+Android 端还可以通过以下方式修改：
+1. 打开调试工具(Dev Settings)，在模拟器中键入 `command+M` (Mac系统)
+2. 点击 `Debug server host & port for device` ，添加 `localhost:xxx` 其中 `xxx` 为新的端口地址
+
 
 
 React-Native

@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package top.faylib.oro.adapter;
+package top.faylib.oro.io;
 
 import android.util.Log;
 

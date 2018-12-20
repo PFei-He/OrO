@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package top.faylib.oro.vendor.adapter;
+package top.faylib.io.network;
 
 import android.net.Uri;
 import android.util.Log;
@@ -289,7 +289,7 @@ public class Network extends ReactContextBaseJavaModule {
     private void debugLog(String ... strings) {
         if (debugMode) {
             for (String string : strings) {
-                Log.i("OrO", "[ OrO ][ NETWORK ]" + string + ".");
+                Log.i("FayLIB", "[ FayLIB ][ NETWORK ]" + string + ".");
             }
         }
     }
@@ -309,7 +309,6 @@ public class Network extends ReactContextBaseJavaModule {
 
     // 发送请求
     private void send(int method, String url, Map params, int retryTimes, Callback callback) {
-
         switch (method) {
             case 0:
                 debugLog(retryTimes == this.retryTimes ? "[ REQUEST ] Start sending" : "[ REQUEST ] Retrying",
